@@ -1,1 +1,42 @@
-theme: jekyll-theme-minimal
+# Site settings
+title: Mihai Pop portofolio
+description: 'My simple portofolio website'
+url: 'http://mihaimpop.github.io/portofolio'
+baseurl: ''
+# google_analytics: 'UA-XXXXXX-X'
+# disqus_shortname: 'your-disqus-name'
+
+author:
+  name: 'Mihai Pop'
+  email: mihai.m.m.pop@gmail.com
+  facebook_username: mihaimmpop
+  github_username:  mihaimpop
+  linkedin_username:  mihaimpop
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 10
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    sass_dir: _sass
+    style: compressed
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+plugins: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png']
