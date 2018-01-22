@@ -1,7 +1,7 @@
 # Site settings
-title: Mihai Pop portofolio
-description: 'My simple portofolio website'
-url: 'http://mihaimpop.github.io/portofolio'
+title: Mihai Pop
+description: 'Frontend web developer/Cute human'
+url: 'http://mihaimpop.github.io'
 baseurl: ''
 # google_analytics: 'UA-XXXXXX-X'
 # disqus_shortname: 'your-disqus-name'
@@ -9,6 +9,7 @@ baseurl: ''
 author:
   name: 'Mihai Pop'
   email: mihai.m.m.pop@gmail.com
+  #twitter_username: mihaipop
   facebook_username: mihaimmpop
   github_username:  mihaimpop
   linkedin_username:  mihaimpop
