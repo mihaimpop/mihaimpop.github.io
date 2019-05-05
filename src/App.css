@@ -1,0 +1,113 @@
+.App {
+  text-align: center;
+}
+
+.Background {
+  align-items: center;
+  background-image: url("img/bg.png");
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.InfoCard {
+  background-color: #ffffffdb;
+  border-radius: 5px;
+  color: #362c36;
+  padding: 0 15px;
+}
+
+.InfoCard-Content {
+  margin-top: -50px;
+}
+
+.ProfilePictureContainer {
+  border-radius: 50%;
+  height: 100px;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  top: -50px;
+  width: 100px;
+}
+
+.ProfilePicture {
+  display: inline;
+  height: 130%;
+  margin: 0 auto;
+  width: auto;
+}
+
+.info-link {
+}
+
+.Credentials {
+  display: flex;
+  flex-flow: column;
+  font-weight: 600;
+}
+
+.Bio {
+  display: flex;
+  flex-flow: column;
+  line-height: 1.5em;
+  text-align: justify;
+}
+
+.Education {
+  display: flex;
+  flex-flow: column;
+}
+
+.Name {
+  font-size: 2.3em;
+  font-weight: 700;
+}
+
+.Position {
+  font-size: 1.3em;
+}
+
+.Links {
+  display: flex;
+  font-size: 40px;
+  justify-content: center;
+}
+
+.Social-Link {
+  text-decoration: none;
+  color: #362c36;
+}
+
+a.Social-Link:hover {
+  color: blueviolet;
+}
+
+.content--width {
+  width: 40vw;
+  margin: auto;
+}
+
+.content--padding {
+  padding: 0 10px 10px 10px;
+}
+
+.bio-padding {
+  padding-bottom: 5px;
+}
+
+.bold-600 {
+  font-weight: 600;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .InfoCard {
+    width: 88vw;
+  }
+
+  .content--width {
+    width: 75vw;
+  }
+}
