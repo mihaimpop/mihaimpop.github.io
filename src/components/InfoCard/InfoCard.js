@@ -24,28 +24,28 @@ class InfoCard extends React.Component {
   render() {
     const {links} = this.state;
     return (
-      <div className="InfoCard">
+      <div className="InfoCard content--width content--pading">
         <div className="ProfilePictureContainer">
           <img className="ProfilePicture" src={ProfilePic} alt="profile-face-pic"/>
         </div>
         <div className="InfoCard-Content">
-          <div className="Credentials content--width content--padding">
+          <div className="Credentials">
             <span className="Name">{locales.name}</span>
             <span className="Position">{locales.position}</span>
           </div>
 
-          <div className="Bio content--width content--padding">
-            <span className="bio-padding">{locales.bioL1}</span>
-            <span className="bio-padding">{locales.bioL2}</span>
+          <div className="Bio">
+            {/* <span>{locales.bioL1}</span> */}
+            <span className="bio-padding">{locales.bioL11}</span>
             <span className="bio-padding">{locales.bioL3}</span>
           </div>
 
-          <div className="Education content--width content--padding">
+          <div className="Education">
             <span className="bold-600">{locales.education}</span>
             <span>{locales.universityName}</span>
           </div>
 
-          <div className="Links content--width">
+          <div className="Links">
             {
               links.map(({icon, title, url}, id) =>
                 <div className="info-link" key={`social-${id}`} title={url}>
