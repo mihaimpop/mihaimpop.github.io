@@ -13,10 +13,26 @@
 }
 
 .InfoCard {
-  background-color: #ffffffdb;
+  /* background-color: #ffffffdb; */
   border-radius: 5px;
-  color: #362c36;
+  color: #1b1a1b;
   padding: 0 15px;
+  /* background-color: rgba(255, 255, 255, .15);  
+  backdrop-filter: blur(5px); */
+}
+
+/* slightly transparent fallback */
+.backdrop-blur {
+  background-color: rgba(255, 255, 255, .75);
+}
+
+/* if backdrop support: very transparent and blurred */
+@supports ((-webkit-backdrop-filter: blur(5px)) or (backdrop-filter: blur(5px))) {
+  .backdrop-blur {
+    background-color: rgba(255, 255, 255, .38);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
 }
 
 .InfoCard-Content {

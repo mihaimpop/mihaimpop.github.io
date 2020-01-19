@@ -24,7 +24,7 @@ class InfoCard extends React.Component {
   render() {
     const {links} = this.state;
     return (
-      <div className="InfoCard content--width content--pading">
+      <div className="InfoCard content--width content--pading backdrop-blur">
         <div className="ProfilePictureContainer">
           <img className="ProfilePicture" src={ProfilePic} alt="profile-face-pic"/>
         </div>
