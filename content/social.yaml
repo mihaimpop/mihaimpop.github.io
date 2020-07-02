@@ -1,0 +1,32 @@
+- name: linkedin
+  url: https://www.linkedin.com/in/mihaimpop
+
+# - name: twitter
+#   url: https://twitter.com/username
+
+- name: facebook
+  url: https://www.facebook.com/mihaimmpop
+
+- name: instagram
+  url: https://www.instagram.com/mihaimpop
+
+# - name: dribbble
+#   url:
+
+# - name: behance
+#   url:
+
+# - name: producthunt
+#   url:
+
+- name: github
+  url: https://github.com/mihaimpop
+
+# - name: goodreads
+#   url:
+
+# - name: xing
+#   url:
+
+# - name: youtube
+#   url: https://www.youtube.com/channel%2FUCr32vZZxRJ-x7tn_7CRJdrQ

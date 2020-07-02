@@ -1,0 +1,30 @@
+- name: Romania COVID-19 Stats
+  url: mihaimpop.github.io/rcc
+  description: Simple wrapper over John Hopkins live interactive map in order to extract specific information about Romania.
+  status: live
+  tags:
+    - JavaScript
+    - React
+  icon: github
+  image: images/rcc.png
+
+
+- name: toMono
+  url: https://chrome.google.com/webstore/detail/tomono/iobkibolbjfdndjpmfbkkekeohkldgcj
+  description: A Chrome extension that makes a video's audio mono. Useful when a video has only one audio channel enabled.
+  status: live
+  tags:
+    - JavaScript
+    - HTML
+  icon: website
+  image: images/toMono.png
+
+- name: BrainyAnt promo video
+  url: https://drive.google.com/file/d/1xvCEWAdB2a5yFW5RCgF5l4sFLGuaZ0CJ/view?usp=sharing
+  description: Promo video for a local startup which featured IOT programmable robots.
+  tags:
+    - Videography
+    - Premiere
+    - After Effects
+  icon: website
+  image: images/brainyant.png

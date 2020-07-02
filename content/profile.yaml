@@ -1,0 +1,27 @@
+- profile:
+  initials: MP
+  name: Mihai Pop
+  email: mihai.m.m.pop@gmail.com
+  profession: Web Developer
+  image: images/profile.jpg
+  location: Cluj-Napoca, Romania
+  relocation: false
+  company: Evozon
+  for_hire: false
+  focus: Building awesome stuff
+  focus_url: https://github.com/mihaimpop
+  about: |
+    I am always willing to try different things, in order to be the best version of myself.
+  skills:
+    - JavaScript
+    - HTML / CSS
+    - Videography
+  tools:
+    - React
+    - VSCode
+    - WebStorm
+  budget:
+    currency: $
+    min: 5
+    max: 30
+    default: 10
