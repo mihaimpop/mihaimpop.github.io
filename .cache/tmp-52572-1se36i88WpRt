@@ -1,0 +1,5 @@
+
+    const cmd = require("C:/Users/mihai/Desktop/mihaimpop.github.io/node_modules/gatsby/dist/commands/develop-process.js");
+    const args = {"_":["develop"],"verbose":false,"no-color":false,"no-colors":false,"noColors":false,"noColor":false,"json":false,"H":"localhost","host":"localhost","p":"8000","port":56525,"c":"","cert-file":"","certFile":"","k":"","key-file":"","keyFile":"","ca-file":"","caFile":"","graphql-tracing":false,"graphqlTracing":false,"$0":"gatsby","directory":"C:\\Users\\mihai\\Desktop\\mihaimpop.github.io","browserslist":[">0.25%","not dead"],"sitePackageJson":{"name":"mihaimpop.github.io","version":"1.0.0","main":"index.js","repository":"git@github.com:mihaimpop/mihaimpop.github.io.git","author":"Mihai Pop <mihai.m.m.pop@gmail.com>","license":"MIT","dependencies":{"@wkocjan/gatsby-theme-intro":"^1.0.6","gatsby":"^2.23.18","react":"^16.13.1","react-dom":"^16.13.1"},"scripts":{"deploy":"gatsby build --prefix-paths && gh-pages -d public -b master"}},"report":{},"useYarn":true,"proxyPort":"8000","ssl":null};
+    cmd(args);
+  
