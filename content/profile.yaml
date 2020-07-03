@@ -18,8 +18,8 @@
     - Videography
   tools:
     - React
+    - Typescript
     - VSCode
-    - WebStorm
   budget:
     currency: $
     min: 5

@@ -28,5 +28,5 @@
 # - name: xing
 #   url:
 
-# - name: youtube
-#   url: https://www.youtube.com/channel%2FUCr32vZZxRJ-x7tn_7CRJdrQ
+- name: youtube
+  url: https://www.youtube.com/channel%2FUCr32vZZxRJ-x7tn_7CRJdrQ
