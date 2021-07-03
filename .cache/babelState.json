@@ -3,6 +3,16 @@
     "develop": {
       "plugins": [
         {
+          "name": "babel-plugin-lodash",
+          "options": {}
+        },
+        {
+          "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -19,7 +29,10 @@
         {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\preset-typescript\\lib\\index.js",
           "options": {
-            "plugins": []
+            "plugins": [],
+            "allExtensions": false,
+            "isTSX": false,
+            "jsxPragma": "React"
           }
         }
       ],
@@ -31,6 +44,16 @@
     "develop-html": {
       "plugins": [
         {
+          "name": "babel-plugin-lodash",
+          "options": {}
+        },
+        {
+          "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -47,7 +70,10 @@
         {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\preset-typescript\\lib\\index.js",
           "options": {
-            "plugins": []
+            "plugins": [],
+            "allExtensions": false,
+            "isTSX": false,
+            "jsxPragma": "React"
           }
         }
       ],
@@ -59,6 +85,16 @@
     "build-html": {
       "plugins": [
         {
+          "name": "babel-plugin-lodash",
+          "options": {}
+        },
+        {
+          "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -75,7 +111,10 @@
         {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\preset-typescript\\lib\\index.js",
           "options": {
-            "plugins": []
+            "plugins": [],
+            "allExtensions": false,
+            "isTSX": false,
+            "jsxPragma": "React"
           }
         }
       ],
@@ -87,6 +126,16 @@
     "build-javascript": {
       "plugins": [
         {
+          "name": "babel-plugin-lodash",
+          "options": {}
+        },
+        {
+          "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\gatsby-plugin-image\\dist\\babel-plugin-parse-static-images.js",
+          "options": {
+            "cacheDir": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\.cache\\caches\\gatsby-plugin-image"
+          }
+        },
+        {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\plugin-proposal-optional-chaining\\lib\\index.js",
           "options": {}
         },
@@ -103,7 +152,10 @@
         {
           "name": "C:\\Users\\mihai\\Desktop\\mihaimpop.github.io\\node_modules\\@babel\\preset-typescript\\lib\\index.js",
           "options": {
-            "plugins": []
+            "plugins": [],
+            "allExtensions": false,
+            "isTSX": false,
+            "jsxPragma": "React"
           }
         }
       ],

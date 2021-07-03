@@ -3,6 +3,7 @@ module.exports = {
     description: "Personal page of Mihai Pop",
     locale: "en",
     title: "Mihai Pop",
+    formspreeEndpoint: "https://formspree.io/f/mayabang"
   },
   plugins: [
     {

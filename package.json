@@ -6,7 +6,8 @@
   "author": "Mihai Pop <mihai.m.m.pop@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@wkocjan/gatsby-theme-intro": "^1.0.8",
+    "@babel/core": "^7.14.6",
+    "@wkocjan/gatsby-theme-intro": "^2.0.1",
     "gatsby": "^2.23.18",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

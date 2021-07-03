@@ -1,6 +1,9 @@
 var plugins = [{
       plugin: require('C:/Users/mihai/Desktop/mihaimpop.github.io/node_modules/gatsby-plugin-react-helmet/gatsby-ssr'),
       options: {"plugins":[]},
+    },{
+      plugin: require('C:/Users/mihai/Desktop/mihaimpop.github.io/node_modules/gatsby-plugin-image/gatsby-ssr'),
+      options: {"plugins":[]},
     }]
 // During bootstrap, we write requires at top of this file which looks like:
 // var plugins = [
