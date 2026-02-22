@@ -1,11 +1,11 @@
 export const CHAPTERS = [
   { t:0.00, key:"01", name:"TOUR",
     h:"I MAKE THINGS THAT FEEL ALIVE.",
-    s:"Scroll. Drag. Hold. Flick. If it doesn’t react, it’s not finished.",
+    s:"I want interfaces that answer your hands, not just your eyes.",
     form:{ rails:0.15, coil:0.0, ribbon:0.0 },
     pal:{ base:[0.98,0.98,1.0], c1:[1.00,0.05,0.55], c2:[0.00,1.00,0.85], c3:[1.00,0.90,0.12] },
     mot:{ turb:0.10, flo:1.00 },
-    face:{ mouth:0.25, brow:0.10, squint:0.00, grin:0.12 }
+    face:{ mouth:-1, brow:0.10, squint:0.00, grin:0.20, browTilt:0.04, mouthWidth:0.10, mouthY:-0.01, eyeWide:0.08, eyeGap:0.00, browAsym:-0.02, browCurve:0.08, eyeTilt:0.00, pupilSize:0.05, pupilLift:-0.02, mouthOpen:0.05, mouthSkew:0.06, mouthPinch:-0.03, poseX:0.02, poseY:0.00 }
   },
   { t:0.20, key:"02", name:"BUILD",
     h:"I BUILD END-TO-END.",
@@ -13,7 +13,7 @@ export const CHAPTERS = [
     form:{ rails:0.10, coil:0.0, ribbon:0.0 },
     pal:{ base:[0.99,0.99,1.0], c1:[0.10,0.95,1.00], c2:[0.25,0.10,1.00], c3:[1.00,0.12,0.65] },
     mot:{ turb:0.085, flo:0.90 },
-    face:{ mouth:0.10, brow:-0.08, squint:0.06, grin:0.00 }
+    face:{ mouth:0, brow:-0.08, squint:0.08, grin:0.00, browTilt:-0.16, mouthWidth:-0.12, mouthY:0.05, eyeWide:-0.16, eyeGap:0.06, browAsym:0.06, browCurve:-0.22, eyeTilt:-0.12, pupilSize:-0.08, pupilLift:0.06, mouthOpen:0.00, mouthSkew:-0.05, mouthPinch:0.14, poseX:-0.02, poseY:0.10 }
   },
   { t:0.44, key:"03", name:"PUZZLES",
     h:"WHEN IT BREAKS, I GET CALM.",
@@ -21,7 +21,7 @@ export const CHAPTERS = [
     form:{ rails:0.90, coil:0.15, ribbon:0.0 },
     pal:{ base:[0.98,0.98,1.0], c1:[1.00,0.88,0.10], c2:[0.00,1.00,0.72], c3:[1.00,0.12,0.60] },
     mot:{ turb:0.10, flo:1.00 },
-    face:{ mouth:0.16, brow:0.12, squint:0.06, grin:0.02 }
+    face:{ mouth:-1, brow:0.14, squint:0.08, grin:0.04, browTilt:-0.04, mouthWidth:-0.04, mouthY:0.03, eyeWide:-0.10, eyeGap:-0.02, browAsym:-0.04, browCurve:-0.10, eyeTilt:-0.05, pupilSize:-0.02, pupilLift:0.03, mouthOpen:0.03, mouthSkew:0.03, mouthPinch:0.08, poseX:0.01, poseY:-0.07 }
   },
   { t:0.66, key:"04", name:"SOUND",
     h:"MUSIC IS WHERE I LET IT MOVE.",
@@ -29,15 +29,15 @@ export const CHAPTERS = [
     form:{ rails:0.22, coil:1.00, ribbon:0.10 },
     pal:{ base:[0.98,0.98,1.0], c1:[1.00,0.18,0.50], c2:[0.00,1.00,0.90], c3:[0.55,0.12,1.00] },
     mot:{ turb:0.13, flo:1.35 },
-    face:{ mouth:0.40, brow:0.18, squint:0.00, grin:0.20 }
+    face:{ mouth:0.42, brow:0.20, squint:0.00, grin:0.24, browTilt:0.24, mouthWidth:0.24, mouthY:-0.05, eyeWide:0.16, eyeGap:0.04, browAsym:0.02, browCurve:0.18, eyeTilt:0.08, pupilSize:0.12, pupilLift:-0.03, mouthOpen:0.22, mouthSkew:0.02, mouthPinch:-0.10, poseX:0.04, poseY:0.14 }
   },
   { t:0.84, key:"05", name:"STORY",
     h:"I WANT IT TO FEEL LIKE A SCENE.",
-    s:"Strong choices, clean taste. I’m not selling “weird”. I’m building presence.",
+    s:"Strong choices, clean taste. I’m not chasing novelty, I’m shaping a point of view.",
     form:{ rails:0.30, coil:0.25, ribbon:1.00 },
     pal:{ base:[0.98,0.98,1.0], c1:[1.00,0.90,0.10], c2:[0.00,1.00,0.85], c3:[1.00,0.10,0.62] },
     mot:{ turb:0.11, flo:1.10 },
-    face:{ mouth:0.30, brow:0.06, squint:0.02, grin:0.12 }
+    face:{ mouth:0.30, brow:0.06, squint:0.02, grin:0.12, browTilt:0.10, mouthWidth:0.08, mouthY:-0.02, eyeWide:0.04, eyeGap:-0.04, browAsym:0.00, browCurve:0.08, eyeTilt:0.02, pupilSize:0.00, pupilLift:0.00, mouthOpen:0.10, mouthSkew:-0.04, mouthPinch:0.02, poseX:0.02, poseY:-0.04 }
   },
   { t:0.93, key:"06", name:"LINKS",
     h:"ALRIGHT. IF YOU’RE STILL HERE — RESPECT.",
@@ -45,6 +45,6 @@ export const CHAPTERS = [
     form:{ rails:0.12, coil:0.12, ribbon:0.12 },
     pal:{ base:[0.99,0.99,1.0], c1:[0.25,0.10,1.00], c2:[0.00,1.00,0.90], c3:[1.00,0.10,0.62] },
     mot:{ turb:0.09, flo:0.95 },
-    face:{ mouth:0.46, brow:0.12, squint:0.00, grin:0.12 }
+    face:{ mouth:0.48, brow:0.12, squint:0.00, grin:0.16, browTilt:-0.02, mouthWidth:0.14, mouthY:-0.04, eyeWide:0.10, eyeGap:0.02, browAsym:-0.02, browCurve:0.12, eyeTilt:0.04, pupilSize:0.08, pupilLift:-0.01, mouthOpen:0.16, mouthSkew:0.04, mouthPinch:-0.04, poseX:0.03, poseY:0.06 }
   },
 ];

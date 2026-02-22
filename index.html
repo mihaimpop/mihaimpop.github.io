@@ -10,24 +10,27 @@
 </head>
 
 <body>
-  <div class="hud" aria-label="HUD">
+  <div class="hud" id="M_hud" aria-label="HUD">
     <div class="leftHud">
       <button class="logoBtn" id="logoBtn" aria-label="Logo">
         <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M3 22V4h4.2l5.8 9.4L18.8 4H23v18h-3.9V10.8l-5 8.2h-2.2l-5-8.2V22H3z" fill="currentColor"/>
         </svg>
       </button>
-
-      <div class="pill">
-        <b id="M_modeLabel">TOUR</b>
-        <span id="M_modeHint">Drag / hold / flick / tap → it reacts</span>
-      </div>
     </div>
 
     <div class="rightHud">
-      <button class="btn" id="M_themeBtn" type="button">Theme: Light</button>
-      <button class="btn" id="M_playBtn" type="button">PLAY</button>
-      <button class="btn" id="M_tourToggle" type="button">Tour: ON</button>
+      <button class="btn playBtn" id="M_playBtn" type="button">PLAY</button>
+      <button class="menuBtn" id="M_menuBtn" type="button" aria-label="Open controls" aria-controls="M_controlsMenu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="controlsMenu" id="M_controlsMenu" role="menu" aria-label="Controls" hidden>
+        <span class="controlsEyebrow">Control Deck</span>
+        <button class="btn menuCtl" id="M_themeBtn" type="button" role="menuitem">Theme: Light</button>
+        <button class="btn menuCtl" id="M_tourToggle" type="button" role="menuitem">Tour: ON</button>
+      </div>
     </div>
   </div>
 
@@ -42,20 +45,18 @@
 
         <div class="metaRow">
           <div class="left">
-            <span class="metaKey"><b id="M_chKey">01</b> / <span id="M_chName">TOUR</span></span>
             <span class="metaKey">Cluj-Napoca · full-stack · music · story</span>
-          </div>
-          <div>
-            <span>46.77°N · 23.62°E</span> · <span id="M_clock">--:--</span>
           </div>
         </div>
       </div>
+
+      <div class="scrollHint" id="M_scrollHint" aria-hidden="true">Scroll to advance chapters</div>
 
       <div class="caption" aria-live="polite">
         <h2 class="headline" id="M_headline">I MAKE THINGS THAT FEEL ALIVE.</h2>
         <p class="sub" id="M_subline">
           <span class="tag">Tour</span>
-          Scroll… and try grabbing the mascot.
+          It should feel interactive before you read a word.
         </p>
       </div>
     </div>
@@ -100,11 +101,10 @@
     <span class="x" id="M_drawerX">x</span>
     <h3>PLAY (touch / mouse)</h3>
     <div class="grid">
-      <div class="tile"><b>Drag / Swipe</b><small>Grab it. Throw it. It has inertia now.</small></div>
+      <div class="tile"><b>Drag / Swipe</b><small>Grab it and move it with touch or mouse.</small></div>
       <div class="tile"><b>Press &amp; hold</b><small>Charges Overdrive (turbulence + glow).</small></div>
       <div class="tile"><b>Double tap/click</b><small>Toggles Neon Halo (actually visible).</small></div>
       <div class="tile"><b>Tap</b><small>Wink + smug grin. Because of course.</small></div>
-      <div class="tile"><b>Flick</b><small>Quick swipe = burst lines.</small></div>
       <div class="tile"><b>Hover / move</b><small>Eyes follow your pointer.</small></div>
     </div>
   </div>

@@ -1,9 +1,12 @@
-import { initClock, initTheme, initDrawer } from "./ui.js";
+import { initTheme, initDrawer, initHudMenu } from "./ui.js";
 import { initTourScene } from "./scene.js";
 
 const M_root = document.documentElement;
 
 const M_dom = {
+  hud: document.getElementById("M_hud"),
+  menuBtn: document.getElementById("M_menuBtn"),
+  controlsMenu: document.getElementById("M_controlsMenu"),
   canvas: document.getElementById("M_canvas"),
   tour: document.getElementById("M_tour"),
   themeBtn: document.getElementById("M_themeBtn"),
@@ -13,19 +16,26 @@ const M_dom = {
   drawerClose: document.getElementById("M_drawerX"),
   logoBtn: document.getElementById("logoBtn"),
   year: document.getElementById("M_year"),
-  clock: document.getElementById("M_clock"),
   headline: document.getElementById("M_headline"),
   subline: document.getElementById("M_subline"),
-  chapterKey: document.getElementById("M_chKey"),
-  chapterName: document.getElementById("M_chName"),
-  modeLabel: document.getElementById("M_modeLabel"),
-  modeHint: document.getElementById("M_modeHint"),
+  scrollHint: document.getElementById("M_scrollHint"),
 };
 
 M_dom.year.textContent = new Date().getFullYear();
 
-initClock(M_dom.clock);
+function syncHudOffset() {
+  const hudHeight = M_dom.hud.getBoundingClientRect().height;
+  M_root.style.setProperty("--hud-offset", `${Math.ceil(hudHeight + 20)}px`);
+}
+
+syncHudOffset();
+window.addEventListener("resize", syncHudOffset, { passive: true });
+if (window.ResizeObserver) {
+  new ResizeObserver(syncHudOffset).observe(M_dom.hud);
+}
+
 initTheme({ root: M_root, themeBtn: M_dom.themeBtn });
+initHudMenu({ hud: M_dom.hud, menuBtn: M_dom.menuBtn, controlsMenu: M_dom.controlsMenu });
 initDrawer({
   drawer: M_dom.drawer,
   drawerClose: M_dom.drawerClose,
@@ -40,9 +50,6 @@ initTourScene({
   tourToggle: M_dom.tourToggle,
   headline: M_dom.headline,
   subline: M_dom.subline,
-  chapterKey: M_dom.chapterKey,
-  chapterName: M_dom.chapterName,
-  modeLabel: M_dom.modeLabel,
-  modeHint: M_dom.modeHint,
+  scrollHint: M_dom.scrollHint,
   reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
 });
