@@ -6,6 +6,7 @@ export function initTourScene({
   canvas: M_canvas,
   tour: M_tour,
   tourToggle: M_tourToggle,
+  caption: M_caption,
   headline: M_headline,
   subline: M_subline,
   scrollHint: M_scrollHint,
@@ -17,6 +18,23 @@ export function initTourScene({
   const M_damp = (c,t,lambda,dt)=> M_lerp(c, t, 1 - Math.exp(-lambda * dt));
   const M_easeOutCubic = (x)=> 1 - Math.pow(1 - M_clamp01(x), 3);
   const M_rand = (a,b)=> M_lerp(a, b, Math.random());
+  const M_ua = navigator.userAgent || "";
+  const M_isFirefox = /firefox/i.test(M_ua);
+  const M_isMobile = /android|iphone|ipad|ipod/i.test(M_ua)
+    || window.matchMedia?.("(pointer: coarse)")?.matches;
+  const M_quality = {
+    maxDpr: M_isMobile ? 1.2 : (M_isFirefox ? 1.35 : 1.75),
+    antialias: !(M_isMobile || M_isFirefox),
+    coreDetail: M_isMobile ? 4 : (M_isFirefox ? 4 : 5),
+    dustCount: M_isMobile ? 360 : (M_isFirefox ? 520 : 700),
+    torusSegments: M_isMobile ? 72 : (M_isFirefox ? 84 : 96),
+    coilTubular: M_isMobile ? 160 : (M_isFirefox ? 190 : 240),
+    coilRadial: M_isMobile ? 14 : (M_isFirefox ? 16 : 18),
+    ribbonSegments: M_isMobile ? 340 : (M_isFirefox ? 420 : 540),
+    ringSegments: M_isMobile ? 72 : (M_isFirefox ? 80 : 96),
+    faceSupersample: M_isMobile ? 1 : (M_isFirefox ? 1 : 2),
+    faceFps: M_isMobile ? 30 : (M_isFirefox ? 36 : 60),
+  };
 
   // --------- Tour enabled
   let M_tourEnabled = !M_reducedMotion;
@@ -34,9 +52,74 @@ export function initTourScene({
     }
   }
 
+  function M_setCaptionCopy(headlineEl, sublineEl, chapter) {
+    if (!headlineEl || !sublineEl || !chapter) return;
+    headlineEl.textContent = chapter.h;
+    sublineEl.innerHTML = `<span class="tag">${chapter.name}</span>${chapter.s}`;
+  }
+
+  function M_applyCaption(chapter) {
+    M_setCaptionCopy(M_headline, M_subline, chapter);
+  }
+
+  let M_captionAnimToken = 0;
+  function M_cancelCaptionTransition() {
+    if (!M_caption) return;
+    if (typeof M_caption.getAnimations === "function") {
+      M_caption.getAnimations().forEach((anim)=> anim.cancel());
+    }
+    M_caption.style.opacity = "1";
+    M_caption.style.transform = "translate3d(0,0,0)";
+  }
+
+  function M_swapCaption(chapter, direction = 1) {
+    if (!M_caption || M_reducedMotion || typeof M_caption.animate !== "function") {
+      M_cancelCaptionTransition();
+      M_applyCaption(chapter);
+      return;
+    }
+
+    const token = ++M_captionAnimToken;
+    const dir = direction >= 0 ? 1 : -1;
+    const outY = -dir * 10;
+    const inY = dir * 10;
+    M_cancelCaptionTransition();
+
+    const outAnim = M_caption.animate(
+      [
+        { opacity: 1, transform: "translate3d(0,0,0)" },
+        { opacity: 0, transform: `translate3d(0, ${outY}px, 0)` },
+      ],
+      { duration: 80, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" }
+    );
+
+    outAnim.onfinish = ()=> {
+      if (token !== M_captionAnimToken) return;
+      M_applyCaption(chapter);
+
+      const inAnim = M_caption.animate(
+        [
+          { opacity: 0, transform: `translate3d(0, ${inY}px, 0)` },
+          { opacity: 1, transform: "translate3d(0,0,0)" },
+        ],
+        { duration: 150, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+      );
+      inAnim.onfinish = ()=> {
+        if (token !== M_captionAnimToken) return;
+        M_caption.style.opacity = "1";
+        M_caption.style.transform = "translate3d(0,0,0)";
+      };
+    };
+  }
+
   // --------- Three setup
-  const M_renderer = new THREE.WebGLRenderer({ canvas: M_canvas, antialias:true, alpha:true, powerPreference:"high-performance" });
-  M_renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  const M_renderer = new THREE.WebGLRenderer({
+    canvas: M_canvas,
+    antialias: M_quality.antialias,
+    alpha:true,
+    powerPreference:"high-performance",
+  });
+  M_renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, M_quality.maxDpr));
 
   const M_scene = new THREE.Scene();
   const M_camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
@@ -47,15 +130,31 @@ export function initTourScene({
   M_keyLight.position.set(3.2, 4.2, 4.8);
   M_scene.add(M_keyLight);
   let M_targetScale = 1.0;
+  let M_viewW = 0;
+  let M_viewH = 0;
+  let M_viewDpr = 0;
 
-  function M_handleResize(){
-    const w = window.innerWidth, h = window.innerHeight;
+  function M_syncViewportSize(){
+    const w = Math.max(1, Math.round(M_canvas.clientWidth || window.innerWidth || 1));
+    const h = Math.max(1, Math.round(M_canvas.clientHeight || window.innerHeight || 1));
+    const dpr = Math.min(window.devicePixelRatio || 1, M_quality.maxDpr);
+    if (w === M_viewW && h === M_viewH && Math.abs(dpr - M_viewDpr) < 0.001) return;
+    M_viewW = w;
+    M_viewH = h;
+    M_viewDpr = dpr;
+    M_renderer.setPixelRatio(dpr);
     M_renderer.setSize(w, h, false);
     M_camera.aspect = w / h;
     M_camera.updateProjectionMatrix();
     M_targetScale = w <= 640 ? 0.84 : 1.0;
   }
+
+  function M_handleResize(){
+    M_syncViewportSize();
+  }
   window.addEventListener("resize", M_handleResize, { passive:true });
+  window.visualViewport?.addEventListener("resize", M_handleResize, { passive:true });
+  window.visualViewport?.addEventListener("scroll", M_handleResize, { passive:true });
   M_handleResize();
 
   // --------- Scroll progress
@@ -67,7 +166,7 @@ export function initTourScene({
   }
 
   // --------- Background dust
-  const M_dustCount = 700;
+  const M_dustCount = M_quality.dustCount;
   const M_dustGeo = new THREE.BufferGeometry();
   const M_dustPos = new Float32Array(M_dustCount * 3);
   for (let i=0;i<M_dustCount;i++){
@@ -110,7 +209,7 @@ export function initTourScene({
   `;
 
   // --------- Mascot shader (strong contrast)
-  const M_coreGeo = new THREE.IcosahedronGeometry(1.25, 5);
+  const M_coreGeo = new THREE.IcosahedronGeometry(1.25, M_quality.coreDetail);
 
   const M_coreMat = new THREE.ShaderMaterial({
     uniforms: {
@@ -211,7 +310,7 @@ export function initTourScene({
 
   // Decorations
   function M_makeRing(r, y){
-    const geo = new THREE.TorusGeometry(r, 0.02, 6, 96);
+    const geo = new THREE.TorusGeometry(r, 0.02, 6, M_quality.torusSegments);
     const mat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
     const m = new THREE.Mesh(geo, mat);
     m.position.y = y;
@@ -224,7 +323,7 @@ export function initTourScene({
   M_mascot.add(M_rails);
 
   const M_coil = new THREE.Mesh(
-    new THREE.TorusKnotGeometry(1.08, 0.13, 240, 18, 2, 3),
+    new THREE.TorusKnotGeometry(1.08, 0.13, M_quality.coilTubular, M_quality.coilRadial, 2, 3),
     new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false })
   );
   M_mascot.add(M_coil);
@@ -237,7 +336,7 @@ export function initTourScene({
       pts.push(new THREE.Vector3(Math.cos(t)*2.05, Math.sin(t*2.0)*0.46, Math.sin(t)*2.05));
     }
     const curve = new THREE.CatmullRomCurve3(pts, true);
-    const geo = new THREE.TubeGeometry(curve, 540, 0.030, 10, true);
+    const geo = new THREE.TubeGeometry(curve, M_quality.ribbonSegments, 0.030, 10, true);
     const mat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
     return new THREE.Mesh(geo, mat);
   }
@@ -266,7 +365,7 @@ export function initTourScene({
   M_mascot.add(M_halo);
 
   const M_haloRings = new THREE.Group();
-  const ringGeo = new THREE.RingGeometry(1.85, 1.92, 96);
+  const ringGeo = new THREE.RingGeometry(1.85, 1.92, M_quality.ringSegments);
   const ringMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
   const ring1 = new THREE.Mesh(ringGeo, ringMat.clone());
   const ring2 = new THREE.Mesh(ringGeo, ringMat.clone());
@@ -278,14 +377,14 @@ export function initTourScene({
 
   // Face sprite
   const M_faceSize = 256;
-  const M_faceSupersample = 2;
+  const M_faceSupersample = M_quality.faceSupersample;
   const M_faceCanvas = document.createElement("canvas");
-  M_faceCanvas.width = M_faceSize * M_faceSupersample;
-  M_faceCanvas.height = M_faceSize * M_faceSupersample;
+  M_faceCanvas.width = Math.round(M_faceSize * M_faceSupersample);
+  M_faceCanvas.height = Math.round(M_faceSize * M_faceSupersample);
   const M_fctx = M_faceCanvas.getContext("2d");
   if (M_fctx) {
     M_fctx.imageSmoothingEnabled = true;
-    M_fctx.imageSmoothingQuality = "high";
+    M_fctx.imageSmoothingQuality = (M_isMobile || M_isFirefox) ? "medium" : "high";
   }
   const M_faceTex = new THREE.CanvasTexture(M_faceCanvas);
   M_faceTex.generateMipmaps = false;
@@ -308,6 +407,8 @@ export function initTourScene({
   let M_eyeTilt=0.0, M_pupilSize=0.0, M_pupilLift=0.0;
   let M_mouthOpen=0.04, M_mouthSkew=0.06, M_mouthPinch=-0.03;
   let M_winkKick = 0;
+  const M_faceFrameInterval = 1 / Math.max(1, M_quality.faceFps);
+  let M_faceFrameAcc = M_faceFrameInterval;
 
   function M_drawFace(){
     const ctx = M_fctx;
@@ -427,6 +528,7 @@ export function initTourScene({
 
   // FX + interaction state
   let M_lastKey = M_chapters[0].key;
+  let M_lastUiChapterIdx = 0;
   let M_hasMountedChapterUI = false;
   let M_fxPulse = 0;
   let M_brandBurst = 0;
@@ -985,21 +1087,26 @@ export function initTourScene({
       // Keep copy changes in phase with the same blend that drives mascot visuals.
       if (M_uiChapterIdx < blendIdx || M_uiChapterIdx > nextIdx) {
         M_uiChapterIdx = blendT >= 0.5 ? nextIdx : blendIdx;
-      } else if (M_uiChapterIdx === blendIdx && blendT >= 0.55) {
+      } else if (M_uiChapterIdx === blendIdx && blendT >= 0.52) {
         M_uiChapterIdx = nextIdx;
-      } else if (M_uiChapterIdx === nextIdx && blendT <= 0.45) {
+      } else if (M_uiChapterIdx === nextIdx && blendT <= 0.48) {
         M_uiChapterIdx = blendIdx;
       }
     }
 
     const chUI = M_chapters[M_uiChapterIdx];
-
-    // UI: update only when chapter actually changes.
     if (!M_hasMountedChapterUI || chUI.key !== M_lastKey){
       const didChange = M_hasMountedChapterUI && chUI.key !== M_lastKey;
+      const prevChapterIdx = M_lastUiChapterIdx;
       M_lastKey = chUI.key;
-      M_headline.textContent = chUI.h;
-      M_subline.innerHTML = `<span class="tag">${chUI.name}</span>${chUI.s}`;
+      M_lastUiChapterIdx = M_uiChapterIdx;
+      if (didChange) {
+        const direction = M_uiChapterIdx >= prevChapterIdx ? 1 : -1;
+        M_swapCaption(chUI, direction);
+      } else {
+        M_cancelCaptionTransition();
+        M_applyCaption(chUI);
+      }
       M_hasMountedChapterUI = true;
       if (didChange) {
         M_thump();
@@ -1258,7 +1365,11 @@ export function initTourScene({
     const blinkTarget = blinkActive ? (1.0 - bc) : 0.0;
     M_blink = M_damp(M_blink, blinkTarget, 18.0, dt);
 
-    M_drawFace();
+    M_faceFrameAcc += dt;
+    if (M_faceFrameAcc >= M_faceFrameInterval){
+      M_drawFace();
+      M_faceFrameAcc = M_faceFrameAcc % M_faceFrameInterval;
+    }
     M_renderer.render(M_scene, M_camera);
   }
 

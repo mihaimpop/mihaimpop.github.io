@@ -391,6 +391,8 @@
       bottom: calc(var(--pad) + var(--sab));
       z-index:60;
       max-width: min(980px, calc(100vw - 2*var(--pad)));
+      will-change: opacity, transform;
+      transform: translate3d(0,0,0);
     }
     .headline{
       margin:0 0 10px;
@@ -598,6 +600,9 @@
     @media (prefers-reduced-motion: reduce){
       .logoBtn.logoBtnFlash{
         animation: none;
+      }
+      .caption{
+        transform: none !important;
       }
     }
 
