@@ -16,10 +16,23 @@ export function initTourScene({
   const M_lerp = (a,b,t)=> a + (b-a)*t;
   const M_damp = (c,t,lambda,dt)=> M_lerp(c, t, 1 - Math.exp(-lambda * dt));
   const M_easeOutCubic = (x)=> 1 - Math.pow(1 - M_clamp01(x), 3);
+  const M_rand = (a,b)=> M_lerp(a, b, Math.random());
 
   // --------- Tour enabled
-  let M_tourEnabled = !M_reducedMotion && location.hash !== "#express";
+  let M_tourEnabled = !M_reducedMotion;
   M_tourToggle.textContent = M_tourEnabled ? "Tour: ON" : "Tour: OFF";
+
+  function M_tourIsVisible() {
+    const r = M_tour.getBoundingClientRect();
+    return r.bottom > 0 && r.top < window.innerHeight;
+  }
+
+  function M_scrollToExpress() {
+    document.getElementById("express")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (location.hash === "#express") {
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+    }
+  }
 
   // --------- Three setup
   const M_renderer = new THREE.WebGLRenderer({ canvas: M_canvas, antialias:true, alpha:true, powerPreference:"high-performance" });
@@ -185,7 +198,7 @@ export function initTourScene({
   const M_core = new THREE.Mesh(M_coreGeo, M_coreMat);
 
   // Wireframe
-  const M_wireMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.24, depthWrite:false });
+  const M_wireMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.24, depthWrite:false, toneMapped:false });
   const M_wire = new THREE.LineSegments(new THREE.WireframeGeometry(M_coreGeo), M_wireMat);
   M_wire.scale.setScalar(1.0025);
   M_wire.renderOrder = 20;
@@ -416,6 +429,8 @@ export function initTourScene({
   let M_lastKey = M_chapters[0].key;
   let M_hasMountedChapterUI = false;
   let M_fxPulse = 0;
+  let M_brandBurst = 0;
+  let M_brandScaleKick = 0;
 
   let M_overdrive = 0.0;     // charged by hold
   let M_neon = 0.0;          // toggled by double tap
@@ -437,8 +452,14 @@ export function initTourScene({
   let M_introT = 0.0;
   const M_introDur = 1.35;
 
-  // pointer tracking (for face)
+  // pointer tracking (for face + orientation)
   let M_ptrNX = 0, M_ptrNY = 0;
+  let M_lastPointerType = "mouse";
+  let M_touchContact = false;
+  let M_ptrRotX = 0, M_ptrRotY = 0;
+  function M_isTouchLikePointer(e){
+    return e?.pointerType === "touch" || e?.pointerType === "pen";
+  }
   function M_setPointerFromEvent(e){
     const rect = M_canvas.getBoundingClientRect();
     const x = (("clientX" in e) ? e.clientX : (e.touches?.[0]?.clientX ?? rect.left + rect.width/2));
@@ -447,6 +468,18 @@ export function initTourScene({
     const ny = ((y - rect.top) / rect.height) * 2 - 1;
     M_ptrNX = Math.max(-1, Math.min(1, nx));
     M_ptrNY = Math.max(-1, Math.min(1, ny));
+    M_lastPointerType = (typeof e.pointerType === "string" && e.pointerType)
+      ? e.pointerType
+      : (e.touches ? "touch" : "mouse");
+  }
+  function M_pointerTargets(){
+    const touchLike = (M_lastPointerType === "touch" || M_lastPointerType === "pen");
+    const recenterTouch = touchLike && !M_down && !M_touchContact && M_activePointerId === null;
+    return {
+      x: recenterTouch ? 0.0 : M_ptrNX,
+      y: recenterTouch ? 0.0 : M_ptrNY,
+      recenterTouch,
+    };
   }
 
   // gesture tracking
@@ -458,6 +491,11 @@ export function initTourScene({
   let M_lastTapTime = 0;
   let M_lastX = 0, M_lastY = 0;
   let M_holdCharge = 0;
+  let M_lastRotateInputAt = performance.now();
+  const M_autoResetDelay = 2.8;
+  const M_autoResetRamp = 1.4;
+  const M_spinCarryThreshold = 0.055;
+  const M_spinSettleThreshold = 0.022;
 
   function M_toggleNeon(){ M_neon = (M_neon > 0.5) ? 0.0 : 1.0; }
   function M_thump(){
@@ -482,6 +520,7 @@ export function initTourScene({
     M_canvas.setPointerCapture?.(e.pointerId);
     M_down = true;
     M_downAt = performance.now();
+    M_lastRotateInputAt = M_downAt;
     M_downStartX = e.clientX;
     M_downStartY = e.clientY;
     M_dragTravel = 0;
@@ -503,6 +542,9 @@ export function initTourScene({
     if (M_down){
       const dx = (e.clientX - M_lastX);
       const dy = (e.clientY - M_lastY);
+      if (Math.abs(dx) + Math.abs(dy) > 0.01){
+        M_lastRotateInputAt = performance.now();
+      }
       M_lastX = e.clientX; M_lastY = e.clientY;
       M_dragTravel = Math.max(M_dragTravel, Math.hypot(e.clientX - M_downStartX, e.clientY - M_downStartY));
       const touchYawBoost = e.pointerType === "touch" ? 2.1 : 1.0;
@@ -531,6 +573,7 @@ export function initTourScene({
 
   function M_endGrab(e, cancelTap = false){
     if (e && M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
+    if (M_isTouchLikePointer(e)) M_touchContact = false;
     if (M_activePointerId !== null && M_canvas.hasPointerCapture?.(M_activePointerId)) {
       M_canvas.releasePointerCapture?.(M_activePointerId);
     }
@@ -562,6 +605,9 @@ export function initTourScene({
     if (M_holdCharge > 0.25){
       M_thump();
     }
+    if (M_dragTravel > 6){
+      M_lastRotateInputAt = now;
+    }
   }
 
   M_canvas.addEventListener("pointerup", (e)=> M_endGrab(e, false));
@@ -570,29 +616,92 @@ export function initTourScene({
     if (e.pointerId === M_activePointerId || M_down) M_endGrab(e, true);
   });
   M_canvas.addEventListener("contextmenu", (e)=> e.preventDefault());
-  window.addEventListener("blur", ()=> M_endGrab(null, true));
+  window.addEventListener("blur", ()=> {
+    M_touchContact = false;
+    M_endGrab(null, true);
+  });
   document.addEventListener("visibilitychange", ()=>{
-    if (document.visibilityState !== "visible") M_endGrab(null, true);
+    if (document.visibilityState !== "visible") {
+      M_touchContact = false;
+      M_endGrab(null, true);
+    }
   });
 
-  // follow pointer even when not interacting
-  window.addEventListener("pointermove", (e)=> M_setPointerFromEvent(e), { passive:true });
+  // follow pointer/touch even when not interacting
+  window.addEventListener("pointerdown", (e)=> {
+    if (M_isTouchLikePointer(e)) M_touchContact = true;
+    M_setPointerFromEvent(e);
+  }, { passive:true });
+  window.addEventListener("pointermove", (e)=> {
+    if (M_isTouchLikePointer(e)) M_touchContact = true;
+    M_setPointerFromEvent(e);
+  }, { passive:true });
+  window.addEventListener("pointerup", (e)=> {
+    if (M_isTouchLikePointer(e)) M_touchContact = false;
+  }, { passive:true });
+  window.addEventListener("pointercancel", (e)=> {
+    if (M_isTouchLikePointer(e)) M_touchContact = false;
+  }, { passive:true });
+  // Fallback for browsers/environments that throttle pointer events during touch scrolling.
+  window.addEventListener("touchstart", (e)=> {
+    M_touchContact = e.touches.length > 0;
+    M_setPointerFromEvent(e);
+  }, { passive:true });
+  window.addEventListener("touchmove", (e)=> {
+    M_touchContact = e.touches.length > 0;
+    M_setPointerFromEvent(e);
+  }, { passive:true });
+  window.addEventListener("touchend", (e)=> {
+    M_touchContact = e.touches.length > 0;
+  }, { passive:true });
+  window.addEventListener("touchcancel", ()=> {
+    M_touchContact = false;
+  }, { passive:true });
 
-  // Tour toggle (no peek mode, no layout jump)
-  M_tourToggle.addEventListener("click", ()=>{
-    M_tourEnabled = !M_tourEnabled;
+  function M_setTourEnabled(enabled, { scrollExpress = false } = {}) {
+    M_tourEnabled = enabled;
     M_tourToggle.textContent = M_tourEnabled ? "Tour: ON" : "Tour: OFF";
     if (M_scrollHint && !M_tourEnabled) {
       M_scrollHint.style.opacity = "0";
     }
-    if(!M_tourEnabled){
-      location.hash = "#express";
-    } else {
+    if (!M_tourEnabled) {
+      M_stop();
+      if (scrollExpress) M_scrollToExpress();
       M_renderOnce();
-      const r = M_tour.getBoundingClientRect();
-      const visible = r.bottom > 0 && r.top < window.innerHeight;
-      if (visible) M_start();
+      return;
     }
+    M_renderOnce();
+    if (M_tourIsVisible()) M_start();
+  }
+
+  function M_triggerBrandRefresh() {
+    if (!M_reducedMotion && !M_tourEnabled) {
+      M_setTourEnabled(true);
+    }
+
+    window.scrollTo({ top: 0, behavior: M_reducedMotion ? "auto" : "smooth" });
+    if (location.hash === "#express") {
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+    }
+
+    M_fxPulse = 1.0;
+    M_brandBurst = 1.0;
+    M_brandScaleKick = 1.0;
+    M_holdCharge = Math.max(M_holdCharge, 0.72);
+    M_inertiaRotY = Math.max(M_inertiaRotY, 0.18);
+    M_grabRotY += 0.26;
+    M_lastRotateInputAt = performance.now();
+    M_wink();
+    M_fidget();
+
+    if (M_tourIsVisible()) M_start();
+    else M_renderOnce();
+  }
+
+  // Tour toggle (no peek mode, no layout jump)
+  M_tourToggle.addEventListener("click", ()=>{
+    const nextEnabled = !M_tourEnabled;
+    M_setTourEnabled(nextEnabled, { scrollExpress: !nextEnabled });
   });
 
   // --------- Render loop
@@ -627,6 +736,143 @@ export function initTourScene({
   let M_idleBrow = 0.0;
   let M_idleSmug = 0.0;
 
+  const M_moodTemplate = {
+    mouth:0, brow:0, squint:0, grin:0,
+    browTilt:0, mouthWidth:0, mouthY:0, eyeWide:0, eyeGap:0,
+    browAsym:0, browCurve:0, eyeTilt:0, pupilSize:0, pupilLift:0,
+    mouthOpen:0, mouthSkew:0, mouthPinch:0,
+    lookX:0, lookY:0,
+  };
+  const M_moodState = {
+    timer: 0.0,
+    dur: 2.2,
+    target: { ...M_moodTemplate },
+    smooth: { ...M_moodTemplate },
+  };
+
+  function M_setMoodTargets(next){
+    const tgt = M_moodState.target;
+    tgt.mouth = next.mouth ?? 0;
+    tgt.brow = next.brow ?? 0;
+    tgt.squint = next.squint ?? 0;
+    tgt.grin = next.grin ?? 0;
+    tgt.browTilt = next.browTilt ?? 0;
+    tgt.mouthWidth = next.mouthWidth ?? 0;
+    tgt.mouthY = next.mouthY ?? 0;
+    tgt.eyeWide = next.eyeWide ?? 0;
+    tgt.eyeGap = next.eyeGap ?? 0;
+    tgt.browAsym = next.browAsym ?? 0;
+    tgt.browCurve = next.browCurve ?? 0;
+    tgt.eyeTilt = next.eyeTilt ?? 0;
+    tgt.pupilSize = next.pupilSize ?? 0;
+    tgt.pupilLift = next.pupilLift ?? 0;
+    tgt.mouthOpen = next.mouthOpen ?? 0;
+    tgt.mouthSkew = next.mouthSkew ?? 0;
+    tgt.mouthPinch = next.mouthPinch ?? 0;
+    tgt.lookX = next.lookX ?? 0;
+    tgt.lookY = next.lookY ?? 0;
+  }
+
+  function M_pickMood(){
+    const side = Math.random() < 0.5 ? -1 : 1;
+    const amp = M_rand(0.82, 1.24);
+    const roll = Math.random();
+    const next = {};
+    let durMin = 1.2;
+    let durMax = 2.6;
+
+    if (roll < 0.22){
+      // Thoughtful / problem-solving.
+      next.brow = 0.16 * amp;
+      next.squint = 0.08 * amp;
+      next.browTilt = 0.12 * side * amp;
+      next.browAsym = 0.15 * side * amp;
+      next.browCurve = 0.06 * amp;
+      next.mouthPinch = 0.16 * amp;
+      next.mouthSkew = -0.08 * side * amp;
+      next.pupilLift = 0.07 * amp;
+      next.eyeTilt = 0.05 * side * amp;
+      next.lookX = -0.20 * side * amp;
+      next.lookY = -0.10 * amp;
+      durMin = 1.8; durMax = 3.2;
+    } else if (roll < 0.42){
+      // "Remembered a joke."
+      next.mouth = 0.20 * amp;
+      next.grin = 0.24 * amp;
+      next.mouthOpen = 0.12 * amp;
+      next.mouthSkew = 0.16 * side * amp;
+      next.brow = 0.10 * amp;
+      next.browCurve = 0.14 * amp;
+      next.eyeWide = 0.10 * amp;
+      next.pupilSize = 0.08 * amp;
+      next.lookX = 0.12 * side * amp;
+      next.lookY = -0.06 * amp;
+      durMin = 1.4; durMax = 2.6;
+    } else if (roll < 0.58){
+      // Brief frown / skepticism.
+      next.mouth = -0.22 * amp;
+      next.grin = -0.18 * amp;
+      next.brow = -0.14 * amp;
+      next.squint = 0.11 * amp;
+      next.browCurve = -0.18 * amp;
+      next.mouthPinch = 0.18 * amp;
+      next.mouthY = 0.04 * amp;
+      next.mouthOpen = -0.06 * amp;
+      next.eyeTilt = 0.04 * side * amp;
+      next.lookY = 0.08 * amp;
+      durMin = 1.2; durMax = 2.1;
+    } else if (roll < 0.76){
+      // Curiosity / eyebrow raise.
+      next.brow = 0.17 * amp;
+      next.browAsym = 0.22 * side * amp;
+      next.browTilt = 0.16 * side * amp;
+      next.browCurve = 0.09 * amp;
+      next.eyeWide = 0.08 * amp;
+      next.mouthSkew = 0.08 * side * amp;
+      next.mouth = 0.05 * amp;
+      next.lookX = 0.18 * side * amp;
+      next.pupilLift = 0.03 * amp;
+      durMin = 1.0; durMax = 1.9;
+    } else if (roll < 0.90){
+      // Smug micro-smirk.
+      next.mouth = 0.08 * amp;
+      next.grin = 0.18 * amp;
+      next.squint = 0.07 * amp;
+      next.mouthSkew = 0.18 * side * amp;
+      next.mouthPinch = 0.10 * amp;
+      next.eyeTilt = 0.09 * side * amp;
+      next.pupilSize = 0.05 * amp;
+      next.browAsym = -0.10 * side * amp;
+      next.lookX = 0.12 * side * amp;
+      next.lookY = -0.04 * amp;
+      durMin = 1.4; durMax = 2.4;
+    } else {
+      // Neutral drift, still alive.
+      next.mouth = M_rand(-0.04, 0.06);
+      next.brow = M_rand(-0.03, 0.05);
+      next.squint = M_rand(0.00, 0.04);
+      next.grin = M_rand(-0.02, 0.08);
+      next.mouthOpen = M_rand(-0.02, 0.04);
+      next.pupilLift = M_rand(-0.03, 0.03);
+      next.lookX = M_rand(-0.08, 0.08);
+      next.lookY = M_rand(-0.06, 0.06);
+      durMin = 1.1; durMax = 2.6;
+    }
+
+    next.eyeGap = (next.eyeGap ?? 0) + M_rand(-0.03, 0.03);
+    next.mouthWidth = (next.mouthWidth ?? 0) + M_rand(-0.04, 0.04);
+    if (Math.random() < 0.18){
+      next.lookX = (next.lookX ?? 0) + M_rand(-0.14, 0.14);
+      next.lookY = (next.lookY ?? 0) + M_rand(-0.10, 0.10);
+    }
+
+    M_setMoodTargets(next);
+    M_moodState.timer = 0.0;
+    M_moodState.dur = M_rand(durMin, durMax);
+  }
+
+  M_pickMood();
+
   function M_renderOnce(){
     const now = performance.now();
     const dt = Math.min(0.05, (now - M_lastT)/1000);
@@ -635,17 +881,28 @@ export function initTourScene({
 
     const themeDark = (M_root.dataset.theme === "dark");
 
-    // wire color
-    M_wireMat.color.setHex(themeDark ? 0xf4f7ff : 0x000000);
-    M_wireMat.opacity = themeDark ? 0.16 : 0.12;
+    // wire color / contrast
+    const wirePulse = 0.5 + 0.5 * Math.sin(time * 1.35 + M_pSmooth * 6.2);
+    if (themeDark){
+      M_wireMat.color.setRGB(0.86, 0.94, 1.0);
+      M_wireMat.opacity = 0.34 + M_overdrive*0.16 + M_fxPulse*0.12 + wirePulse*0.05;
+      M_wire.scale.setScalar(1.0068);
+    } else {
+      M_wireMat.color.setHex(0x040508);
+      M_wireMat.opacity = 0.18 + M_overdrive*0.04;
+      M_wire.scale.setScalar(1.0032);
+    }
     if (themeDark !== M_wireDarkMode) {
       M_wireDarkMode = themeDark;
       M_wireMat.depthTest = !themeDark;
+      M_wireMat.blending = themeDark ? THREE.AdditiveBlending : THREE.NormalBlending;
       M_wireMat.needsUpdate = true;
     }
 
     // decay FX
     M_fxPulse = M_damp(M_fxPulse, 0.0, 10.0, dt);
+    M_brandBurst = M_damp(M_brandBurst, 0.0, 3.8, dt);
+    M_brandScaleKick = M_damp(M_brandScaleKick, 0.0, 7.2, dt);
     M_winkKick = M_damp(M_winkKick, 0.0, 10.0, dt);
     M_fidgetFace = M_damp(M_fidgetFace, 0.0, 9.0, dt);
     M_fidgetRotX = M_damp(M_fidgetRotX, 0.0, 9.0, dt);
@@ -672,6 +929,34 @@ export function initTourScene({
     M_idleSmile = M_damp(M_idleSmile, idleSmileTarget, 2.2, dt);
     M_idleBrow = M_damp(M_idleBrow, idleBrowTarget, 3.8, dt);
     M_idleSmug = M_damp(M_idleSmug, idleSmugTarget, 2.8, dt);
+
+    // Randomized micro-expressions with smooth transitions.
+    M_moodState.timer += dt;
+    if (M_moodState.timer >= M_moodState.dur){
+      M_pickMood();
+    }
+    const moodTarget = M_moodState.target;
+    const moodSmooth = M_moodState.smooth;
+    const moodLambda = M_down ? 2.6 : 3.4;
+    moodSmooth.mouth = M_damp(moodSmooth.mouth, moodTarget.mouth, moodLambda, dt);
+    moodSmooth.brow = M_damp(moodSmooth.brow, moodTarget.brow, moodLambda, dt);
+    moodSmooth.squint = M_damp(moodSmooth.squint, moodTarget.squint, moodLambda, dt);
+    moodSmooth.grin = M_damp(moodSmooth.grin, moodTarget.grin, moodLambda, dt);
+    moodSmooth.browTilt = M_damp(moodSmooth.browTilt, moodTarget.browTilt, moodLambda, dt);
+    moodSmooth.mouthWidth = M_damp(moodSmooth.mouthWidth, moodTarget.mouthWidth, moodLambda, dt);
+    moodSmooth.mouthY = M_damp(moodSmooth.mouthY, moodTarget.mouthY, moodLambda, dt);
+    moodSmooth.eyeWide = M_damp(moodSmooth.eyeWide, moodTarget.eyeWide, moodLambda, dt);
+    moodSmooth.eyeGap = M_damp(moodSmooth.eyeGap, moodTarget.eyeGap, moodLambda, dt);
+    moodSmooth.browAsym = M_damp(moodSmooth.browAsym, moodTarget.browAsym, moodLambda, dt);
+    moodSmooth.browCurve = M_damp(moodSmooth.browCurve, moodTarget.browCurve, moodLambda, dt);
+    moodSmooth.eyeTilt = M_damp(moodSmooth.eyeTilt, moodTarget.eyeTilt, moodLambda, dt);
+    moodSmooth.pupilSize = M_damp(moodSmooth.pupilSize, moodTarget.pupilSize, moodLambda, dt);
+    moodSmooth.pupilLift = M_damp(moodSmooth.pupilLift, moodTarget.pupilLift, moodLambda, dt);
+    moodSmooth.mouthOpen = M_damp(moodSmooth.mouthOpen, moodTarget.mouthOpen, moodLambda, dt);
+    moodSmooth.mouthSkew = M_damp(moodSmooth.mouthSkew, moodTarget.mouthSkew, moodLambda, dt);
+    moodSmooth.mouthPinch = M_damp(moodSmooth.mouthPinch, moodTarget.mouthPinch, moodLambda, dt);
+    moodSmooth.lookX = M_damp(moodSmooth.lookX, moodTarget.lookX, moodLambda, dt);
+    moodSmooth.lookY = M_damp(moodSmooth.lookY, moodTarget.lookY, moodLambda, dt);
 
     // scroll
     const pRaw = M_rawScrollProgress();
@@ -727,7 +1012,8 @@ export function initTourScene({
     } else {
       M_holdCharge = Math.max(0, M_holdCharge - dt * 0.85);
     }
-    M_overdrive = M_damp(M_overdrive, M_holdCharge, 8.0, dt);
+    const M_overdriveTarget = Math.max(M_holdCharge, M_brandBurst * 0.55);
+    M_overdrive = M_damp(M_overdrive, M_overdriveTarget, 8.0, dt);
 
     // motion
     const motTurb = M_lerp(chA.mot.turb, chB.mot.turb, blendT);
@@ -765,7 +1051,7 @@ export function initTourScene({
     M_coreMat.uniforms.uOver.value = M_overdrive;
     M_coreMat.uniforms.uPulse.value = M_fxPulse;
 
-    M_coreMat.uniforms.uMix.value = themeDark ? 0.74 : 0.84;
+    M_coreMat.uniforms.uMix.value = themeDark ? 0.86 : 0.92;
     M_coreMat.uniforms.uBase.value.copy(M_baseC);
     M_coreMat.uniforms.uC1.value.copy(M_c1);
     M_coreMat.uniforms.uC2.value.copy(M_c2);
@@ -784,9 +1070,9 @@ export function initTourScene({
     M_ribbon.material.opacity = (0.16 + M_overdrive*0.12) * M_form.ribbon;
 
     // neon halo (visible)
-    const haloOn = Math.max(M_neon, M_overdrive*0.55);
+    const haloOn = Math.max(M_neon, M_overdrive*0.55, M_brandBurst * 0.65);
     M_haloMat.opacity = M_damp(M_haloMat.opacity, haloOn * (themeDark ? 0.85 : 0.65), 6.0, dt);
-    const haloPulse = 1.0 + (M_fxPulse*0.10) + (M_overdrive*0.08);
+    const haloPulse = 1.0 + (M_fxPulse*0.10) + (M_overdrive*0.08) + (M_brandBurst * 0.12);
     M_halo.scale.setScalar(5.2 * haloPulse);
     ring1.material.opacity = haloOn * (themeDark ? 0.30 : 0.22);
     ring2.material.opacity = haloOn * (themeDark ? 0.22 : 0.18);
@@ -796,8 +1082,9 @@ export function initTourScene({
     // Keep a frontal camera on scroll so the mascot does not appear to rotate.
     const scrollWave = Math.sin(M_pSmooth * Math.PI);
     const camX = 0.0;
-    const camZ = 7.6 - scrollWave * 1.5;
-    const camY = 0.24 + scrollWave * 0.24;
+    const camJitter = Math.sin(time * 24.0) * (M_brandBurst * 0.05);
+    const camZ = 7.6 - scrollWave * 1.5 - camJitter * 0.45;
+    const camY = 0.24 + scrollWave * 0.24 + camJitter;
 
     M_camera.position.x = M_damp(M_camera.position.x, camX, 3.6, dt);
     M_camera.position.z = M_damp(M_camera.position.z, camZ, 3.6, dt);
@@ -832,8 +1119,10 @@ export function initTourScene({
     const lev = Math.sin(time * 1.18 * M_floatSpeed) * (0.10 + M_overdrive*0.10);
     M_mascot.position.y = M_damp(M_mascot.position.y, lev + introLift, 7.5, dt);
     M_mascot.position.z = M_damp(M_mascot.position.z, introDepth, 7.5, dt);
-    const mascotScale = M_damp(M_mascot.scale.x, M_targetScale * introScale, 7.5, dt);
+    const brandScale = 1.0 + M_brandScaleKick * 0.08 + Math.sin(time * 22.0) * (M_brandBurst * 0.03);
+    const mascotScale = M_damp(M_mascot.scale.x, M_targetScale * introScale * brandScale, 7.5, dt);
     M_mascot.scale.setScalar(mascotScale);
+    const ptrTargets = M_pointerTargets();
 
     // Drag/swipe controls orientation with inertia.
     if (!M_down){
@@ -845,6 +1134,9 @@ export function initTourScene({
     const releaseLambda = M_down ? 14.0 : M_lerp(0.95, 0.18, M_clamp01(spinSpeed / 0.22));
     M_inertiaRotY = M_damp(M_inertiaRotY, 0.0, releaseLambda, dt);
     M_inertiaRotX = M_damp(M_inertiaRotX, 0.0, releaseLambda * 1.35, dt);
+    if (!M_down && spinSpeed > M_spinCarryThreshold){
+      M_lastRotateInputAt = now;
+    }
 
     const pitchOver = Math.abs(M_grabRotX) - M_pitchLimit;
     if (pitchOver > 0){
@@ -852,8 +1144,29 @@ export function initTourScene({
       M_inertiaRotX *= 0.55;
     }
 
-    const rotYTarget = M_grabRotY + M_chPoseY + introSpin + M_fidgetRotY;
-    const rotXTarget = M_grabRotX + M_chPoseX + M_fidgetRotX;
+    // Return manual drag offsets to the initial orientation after idle time.
+    if (!M_down && spinSpeed < M_spinSettleThreshold){
+      const rotateIdleSec = (now - M_lastRotateInputAt) * 0.001;
+      if (rotateIdleSec > M_autoResetDelay){
+        const autoT = M_clamp01((rotateIdleSec - M_autoResetDelay) / M_autoResetRamp);
+        const autoYawLambda = M_lerp(0.0, 2.8, autoT);
+        const autoPitchLambda = M_lerp(0.0, 3.3, autoT);
+        M_grabRotY = M_damp(M_grabRotY, 0.0, autoYawLambda, dt);
+        M_grabRotX = M_damp(M_grabRotX, 0.0, autoPitchLambda, dt);
+        const autoInertiaLambda = M_lerp(1.8, 6.0, autoT);
+        M_inertiaRotY = M_damp(M_inertiaRotY, 0.0, autoInertiaLambda, dt);
+        M_inertiaRotX = M_damp(M_inertiaRotX, 0.0, autoInertiaLambda * 1.15, dt);
+      }
+    }
+
+    const ptrYawTarget = ptrTargets.x * (M_down ? 0.16 : 0.24);
+    const ptrPitchTarget = ptrTargets.y * (M_down ? 0.10 : 0.15);
+    const ptrLambda = ptrTargets.recenterTouch ? 5.5 : 10.0;
+    M_ptrRotY = M_damp(M_ptrRotY, ptrYawTarget, ptrLambda, dt);
+    M_ptrRotX = M_damp(M_ptrRotX, ptrPitchTarget, ptrLambda, dt);
+
+    const rotYTarget = M_grabRotY + M_ptrRotY + M_chPoseY + introSpin + M_fidgetRotY;
+    const rotXTarget = M_grabRotX + M_ptrRotX + M_chPoseX + M_fidgetRotX;
     const rotLambda = M_introActive ? 14.0 : 11.0;
     M_mascot.rotation.y = M_damp(M_mascot.rotation.y, rotYTarget, rotLambda, dt);
     M_mascot.rotation.x = M_damp(M_mascot.rotation.x, rotXTarget, rotLambda, dt);
@@ -869,9 +1182,12 @@ export function initTourScene({
     M_dust.position.x = M_damp(M_dust.position.x, 0.0, 2.8, dt);
     M_dust.position.y = M_damp(M_dust.position.y, scrollWave * 0.10, 2.8, dt);
 
-    // face follows pointer more strongly
-    M_lookX = M_damp(M_lookX, M_ptrNX, 8.0, dt);
-    M_lookY = M_damp(M_lookY, M_ptrNY, 8.0, dt);
+    // face follows pointer plus subtle thought drift.
+    const moodLookScale = M_down ? 0.42 : 0.72;
+    const lookXTarget = Math.max(-1, Math.min(1, ptrTargets.x + moodSmooth.lookX * moodLookScale));
+    const lookYTarget = Math.max(-1, Math.min(1, ptrTargets.y + moodSmooth.lookY * moodLookScale));
+    M_lookX = M_damp(M_lookX, lookXTarget, 8.0, dt);
+    M_lookY = M_damp(M_lookY, lookYTarget, 8.0, dt);
 
     // face emotions
     const idleSmileAmt = M_idleSmile * 0.11;
@@ -879,23 +1195,23 @@ export function initTourScene({
     const idleSmugAmt = M_idleSmug * (0.72 + 0.28 * Math.sin(time * 3.6));
     const idleSmugDir = M_idleSmugSign;
 
-    M_mouthT = M_lerp(chA.face.mouth, chB.face.mouth, blendT) + M_overdrive*0.10 + idleSmileAmt*0.12 + idleSmugAmt*0.08;
-    M_browT  = M_lerp(chA.face.brow, chB.face.brow, blendT) + M_overdrive*0.08 + idleBrowAmt;
-    M_squintT= M_lerp(chA.face.squint, chB.face.squint, blendT) + (M_grab*0.10) + idleSmugAmt*0.16;
-    M_grinT  = M_lerp(chA.face.grin, chB.face.grin, blendT) + M_overdrive*0.14 + idleSmileAmt + idleSmugAmt*0.22;
-    M_browTiltT = M_lerp(chA.face.browTilt ?? 0, chB.face.browTilt ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir + idleBrowAmt*0.04;
-    M_mouthWidthT = M_lerp(chA.face.mouthWidth ?? 0, chB.face.mouthWidth ?? 0, blendT) + idleSmugAmt*0.08;
-    M_mouthYT = M_lerp(chA.face.mouthY ?? 0, chB.face.mouthY ?? 0, blendT) - idleSmileAmt*0.02;
-    M_eyeWideT = M_lerp(chA.face.eyeWide ?? 0, chB.face.eyeWide ?? 0, blendT) + idleBrowAmt*0.16 + M_fidgetFace*0.09;
-    M_eyeGapT = M_lerp(chA.face.eyeGap ?? 0, chB.face.eyeGap ?? 0, blendT);
-    M_browAsymT = M_lerp(chA.face.browAsym ?? 0, chB.face.browAsym ?? 0, blendT) + idleSmugAmt*0.10*idleSmugDir;
-    M_browCurveT = M_lerp(chA.face.browCurve ?? 0, chB.face.browCurve ?? 0, blendT) + idleBrowAmt*0.22;
-    M_eyeTiltT = M_lerp(chA.face.eyeTilt ?? 0, chB.face.eyeTilt ?? 0, blendT) + idleSmugAmt*0.14*idleSmugDir;
-    M_pupilSizeT = M_lerp(chA.face.pupilSize ?? 0, chB.face.pupilSize ?? 0, blendT) + idleSmugAmt*0.08;
-    M_pupilLiftT = M_lerp(chA.face.pupilLift ?? 0, chB.face.pupilLift ?? 0, blendT) - idleSmileAmt*0.04;
-    M_mouthOpenT = M_lerp(chA.face.mouthOpen ?? 0, chB.face.mouthOpen ?? 0, blendT) + M_overdrive*0.08 + idleSmugAmt*0.06 + M_fidgetFace*0.10;
-    M_mouthSkewT = M_lerp(chA.face.mouthSkew ?? 0, chB.face.mouthSkew ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir;
-    M_mouthPinchT = M_lerp(chA.face.mouthPinch ?? 0, chB.face.mouthPinch ?? 0, blendT) + idleSmugAmt*0.08;
+    M_mouthT = M_lerp(chA.face.mouth, chB.face.mouth, blendT) + M_overdrive*0.10 + idleSmileAmt*0.12 + idleSmugAmt*0.08 + moodSmooth.mouth;
+    M_browT  = M_lerp(chA.face.brow, chB.face.brow, blendT) + M_overdrive*0.08 + idleBrowAmt + moodSmooth.brow;
+    M_squintT= M_lerp(chA.face.squint, chB.face.squint, blendT) + (M_grab*0.10) + idleSmugAmt*0.16 + moodSmooth.squint;
+    M_grinT  = M_lerp(chA.face.grin, chB.face.grin, blendT) + M_overdrive*0.14 + idleSmileAmt + idleSmugAmt*0.22 + moodSmooth.grin;
+    M_browTiltT = M_lerp(chA.face.browTilt ?? 0, chB.face.browTilt ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir + idleBrowAmt*0.04 + moodSmooth.browTilt;
+    M_mouthWidthT = M_lerp(chA.face.mouthWidth ?? 0, chB.face.mouthWidth ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.mouthWidth;
+    M_mouthYT = M_lerp(chA.face.mouthY ?? 0, chB.face.mouthY ?? 0, blendT) - idleSmileAmt*0.02 + moodSmooth.mouthY;
+    M_eyeWideT = M_lerp(chA.face.eyeWide ?? 0, chB.face.eyeWide ?? 0, blendT) + idleBrowAmt*0.16 + M_fidgetFace*0.09 + moodSmooth.eyeWide;
+    M_eyeGapT = M_lerp(chA.face.eyeGap ?? 0, chB.face.eyeGap ?? 0, blendT) + moodSmooth.eyeGap;
+    M_browAsymT = M_lerp(chA.face.browAsym ?? 0, chB.face.browAsym ?? 0, blendT) + idleSmugAmt*0.10*idleSmugDir + moodSmooth.browAsym;
+    M_browCurveT = M_lerp(chA.face.browCurve ?? 0, chB.face.browCurve ?? 0, blendT) + idleBrowAmt*0.22 + moodSmooth.browCurve;
+    M_eyeTiltT = M_lerp(chA.face.eyeTilt ?? 0, chB.face.eyeTilt ?? 0, blendT) + idleSmugAmt*0.14*idleSmugDir + moodSmooth.eyeTilt;
+    M_pupilSizeT = M_lerp(chA.face.pupilSize ?? 0, chB.face.pupilSize ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.pupilSize;
+    M_pupilLiftT = M_lerp(chA.face.pupilLift ?? 0, chB.face.pupilLift ?? 0, blendT) - idleSmileAmt*0.04 + moodSmooth.pupilLift;
+    M_mouthOpenT = M_lerp(chA.face.mouthOpen ?? 0, chB.face.mouthOpen ?? 0, blendT) + M_overdrive*0.08 + idleSmugAmt*0.06 + M_fidgetFace*0.10 + moodSmooth.mouthOpen;
+    M_mouthSkewT = M_lerp(chA.face.mouthSkew ?? 0, chB.face.mouthSkew ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir + moodSmooth.mouthSkew;
+    M_mouthPinchT = M_lerp(chA.face.mouthPinch ?? 0, chB.face.mouthPinch ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.mouthPinch;
 
     M_mouthS = M_damp(M_mouthS, M_mouthT, 8.0, dt);
     M_browS  = M_damp(M_browS,  M_browT,  8.0, dt);
@@ -968,7 +1284,10 @@ export function initTourScene({
 
   // Visible-only animation
   const M_io = new IntersectionObserver(([e])=>{
-    if (!M_tourEnabled) return;
+    if (!M_tourEnabled) {
+      if (M_running) M_stop();
+      return;
+    }
     if (e.isIntersecting) M_start();
     else M_stop();
   }, { threshold: 0.05 });
@@ -980,6 +1299,10 @@ export function initTourScene({
   }, { passive:true });
 
   // Start
-  if (M_tourEnabled) M_start();
+  M_renderOnce();
+  if (M_tourEnabled && M_tourIsVisible()) M_start();
 
+  return {
+    triggerBrandRefresh: M_triggerBrandRefresh,
+  };
 }

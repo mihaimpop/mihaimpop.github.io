@@ -48,7 +48,7 @@ export function initHudMenu({ hud, menuBtn, controlsMenu }) {
   return { openMenu: () => setOpen(true), closeMenu: () => setOpen(false) };
 }
 
-export function initDrawer({ drawer, drawerClose, playBtn, logoBtn }) {
+export function initDrawer({ drawer, drawerClose, playBtn }) {
   function openDrawer() {
     drawer.style.display = "block";
   }
@@ -66,7 +66,6 @@ export function initDrawer({ drawer, drawerClose, playBtn, logoBtn }) {
   });
 
   drawerClose.addEventListener("click", closeDrawer);
-  logoBtn.addEventListener("click", openDrawer);
 
   return { openDrawer, closeDrawer };
 }

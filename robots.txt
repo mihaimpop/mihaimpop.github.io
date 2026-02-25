@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mihaimpop.github.io/sitemap.xml

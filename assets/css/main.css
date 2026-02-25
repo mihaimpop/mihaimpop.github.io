@@ -7,7 +7,7 @@
 
       --card: rgba(255,255,255,.62);
       --card2: rgba(255,255,255,.42);
-      --dot: rgba(11,11,16,.12);
+      --dot: rgba(11,11,16,.14);
       --wash: rgba(255,255,255,.32);
 
       --pad: clamp(14px,3vw,26px);
@@ -32,12 +32,30 @@
       --hair: rgba(242,242,246,.14);
       --card: rgba(242,242,246,.06);
       --card2: rgba(242,242,246,.04);
-      --dot: rgba(242,242,246,.10);
+      --dot: rgba(242,242,246,.12);
       --wash: rgba(7,7,10,.16);
     }
 
     *{ box-sizing:border-box; }
     html{ scroll-behavior:smooth; }
+    .skipLink{
+      position:absolute;
+      left:-9999px;
+      top:0;
+      z-index:120;
+      border:1px solid var(--hair);
+      background:var(--card);
+      color:var(--fg);
+      border-radius:10px;
+      padding:10px 12px;
+      font-family:var(--mono);
+      font-size:12px;
+    }
+    .skipLink:focus{
+      left:12px;
+      top:12px;
+      text-decoration:none;
+    }
     body{
       margin:0;
       background-color: var(--bg);
@@ -90,6 +108,49 @@
     }
     [data-theme="dark"] .logoBtn{ box-shadow: 0 14px 40px rgba(0,0,0,.32); }
     .logoBtn:active{ transform: translateY(1px); }
+    .logoBtn.logoBtnFlash{
+      animation: logoBtnFlash .72s cubic-bezier(.2,.7,.2,1);
+    }
+
+    @keyframes logoBtnFlash{
+      0%{
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 14px 40px rgba(0,0,0,.08);
+      }
+      35%{
+        transform: scale(1.10) rotate(-8deg);
+        box-shadow: 0 0 0 8px rgba(255,255,255,.18), 0 22px 58px rgba(0,0,0,.20);
+      }
+      65%{
+        transform: scale(0.95) rotate(6deg);
+        box-shadow: 0 0 0 4px rgba(255,255,255,.08), 0 18px 52px rgba(0,0,0,.15);
+      }
+      100%{
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 14px 40px rgba(0,0,0,.08);
+      }
+    }
+    [data-theme="dark"] .logoBtn.logoBtnFlash{
+      animation: logoBtnFlashDark .72s cubic-bezier(.2,.7,.2,1);
+    }
+    @keyframes logoBtnFlashDark{
+      0%{
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 14px 40px rgba(0,0,0,.32);
+      }
+      35%{
+        transform: scale(1.10) rotate(-8deg);
+        box-shadow: 0 0 0 8px rgba(242,242,246,.12), 0 28px 72px rgba(0,0,0,.55);
+      }
+      65%{
+        transform: scale(0.95) rotate(6deg);
+        box-shadow: 0 0 0 4px rgba(242,242,246,.08), 0 22px 64px rgba(0,0,0,.48);
+      }
+      100%{
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 14px 40px rgba(0,0,0,.32);
+      }
+    }
 
     .pill{
       display:inline-flex; align-items:center; gap:10px;
@@ -392,6 +453,59 @@
     }
     [data-theme="dark"] .linkRow em{ color: rgba(242,242,246,.60); }
 
+    .noScriptNote{
+      border-top:1px solid var(--hair);
+      padding-top:16px;
+      padding-bottom:20px;
+      display:grid;
+      gap:8px;
+    }
+    .noScriptNote h2{
+      margin:0;
+      letter-spacing:-0.03em;
+      font-size:24px;
+    }
+    .noScriptNote p{
+      margin:0;
+      font-size:14px;
+      line-height:1.55;
+      color:var(--muted);
+    }
+
+    .seoLinks{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      padding: 2px 0 14px;
+      font-family:var(--mono);
+      font-size:10px;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      color:rgba(11,11,16,.28);
+    }
+    .seoLinks a{
+      color:inherit;
+      text-decoration:none;
+      opacity:.9;
+    }
+    .seoLinks a:hover{
+      color:rgba(11,11,16,.46);
+      text-decoration:underline;
+      text-underline-offset:4px;
+    }
+    .seoLinks a:focus-visible{
+      outline:1px solid var(--hair);
+      outline-offset:3px;
+      border-radius:4px;
+    }
+    [data-theme="dark"] .seoLinks{
+      color:rgba(242,242,246,.26);
+    }
+    [data-theme="dark"] .seoLinks a:hover{
+      color:rgba(242,242,246,.50);
+    }
+
     footer{
       border-top:1px solid var(--hair);
       padding:16px 0 28px;
@@ -479,6 +593,12 @@
       }
       .bigName{ font-size: clamp(48px, 16vw, 108px); }
       .scrollHint{ display:none; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .logoBtn.logoBtnFlash{
+        animation: none;
+      }
     }
 
     @media (max-width: 480px){

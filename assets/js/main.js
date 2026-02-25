@@ -36,14 +36,13 @@ if (window.ResizeObserver) {
 
 initTheme({ root: M_root, themeBtn: M_dom.themeBtn });
 initHudMenu({ hud: M_dom.hud, menuBtn: M_dom.menuBtn, controlsMenu: M_dom.controlsMenu });
-initDrawer({
+const M_drawerApi = initDrawer({
   drawer: M_dom.drawer,
   drawerClose: M_dom.drawerClose,
   playBtn: M_dom.playBtn,
-  logoBtn: M_dom.logoBtn,
 });
 
-initTourScene({
+const M_sceneApi = initTourScene({
   root: M_root,
   canvas: M_dom.canvas,
   tour: M_dom.tour,
@@ -52,4 +51,13 @@ initTourScene({
   subline: M_dom.subline,
   scrollHint: M_dom.scrollHint,
   reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
+});
+
+M_dom.logoBtn.addEventListener("click", () => {
+  M_drawerApi.closeDrawer();
+  M_dom.logoBtn.classList.remove("logoBtnFlash");
+  // Restart animation class so repeated clicks still trigger.
+  void M_dom.logoBtn.offsetWidth;
+  M_dom.logoBtn.classList.add("logoBtnFlash");
+  M_sceneApi?.triggerBrandRefresh?.();
 });

@@ -1,27 +1,126 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
   <meta name="color-scheme" content="light dark" />
-  <title>MIHAI</title>
-  <meta name="description" content="Mihai — tour / express / links." />
+  <title>Mihai Pop | Full-Stack Engineer, Filmmaker, YouTube Creator</title>
+  <meta name="description"
+    content="Official Mihai Pop site: full-stack engineering, film projects, and YouTube. Explore code, filmmaking work, and direct links to Mihai Pop profiles." />
+  <meta name="keywords"
+    content="Mihai Pop, Mihai Pop film, Mihai Pop YouTube, Mihai Pop developer, Mihai, Pop, full-stack engineer, filmmaker" />
+  <meta name="author" content="Mihai Pop" />
+  <meta name="theme-color" content="#0b0b10" />
+  <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="canonical" href="https://mihaimpop.github.io/" />
+  <link rel="alternate" hreflang="en" href="https://mihaimpop.github.io/" />
+  <link rel="sitemap" type="application/xml" href="https://mihaimpop.github.io/sitemap.xml" />
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="Mihai Pop" />
+  <meta property="og:title" content="Mihai Pop | Full-Stack Engineer, Filmmaker, YouTube Creator" />
+  <meta property="og:description" content="Official Mihai Pop site with projects in software, film, and YouTube." />
+  <meta property="og:url" content="https://mihaimpop.github.io/" />
+  <meta property="og:image" content="https://mihaimpop.github.io/favicon.svg" />
+  <meta property="profile:first_name" content="Mihai" />
+  <meta property="profile:last_name" content="Pop" />
+  <meta property="profile:username" content="mihaimpop" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Mihai Pop | Full-Stack Engineer, Filmmaker, YouTube Creator" />
+  <meta name="twitter:description" content="Official Mihai Pop website for code, film, and YouTube." />
+  <meta name="twitter:image" content="https://mihaimpop.github.io/favicon.svg" />
   <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="me" href="https://github.com/mihaimpop" />
+  <link rel="me" href="https://www.youtube.com/@meMihai" />
+  <link rel="me" href="https://www.linkedin.com/in/mihaimpop/" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://mihaimpop.github.io/#person",
+          "name": "Mihai Pop",
+          "givenName": "Mihai",
+          "familyName": "Pop",
+          "alternateName": ["Mihai"],
+          "url": "https://mihaimpop.github.io/",
+          "email": "mailto:contact@mihaipop.me",
+          "description": "Mihai Pop is a full-stack engineer, filmmaker, and YouTube creator.",
+          "jobTitle": ["Full-Stack Engineer", "Filmmaker", "YouTube Creator"],
+          "homeLocation": {
+            "@type": "Place",
+            "name": "Cluj-Napoca, Romania"
+          },
+          "knowsAbout": [
+            "Full-stack web development",
+            "Interactive user interfaces",
+            "Film storytelling",
+            "Creative coding",
+            "YouTube content production"
+          ],
+          "sameAs": [
+            "https://github.com/mihaimpop",
+            "https://www.youtube.com/@meMihai",
+            "https://www.linkedin.com/in/mihaimpop/"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://mihaimpop.github.io/#website",
+          "url": "https://mihaimpop.github.io/",
+          "name": "Mihai Pop",
+          "inLanguage": "en",
+          "publisher": {
+            "@id": "https://mihaimpop.github.io/#person"
+          }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "https://mihaimpop.github.io/#profile-page",
+          "url": "https://mihaimpop.github.io/",
+          "name": "Mihai Pop | Full-Stack Engineer, Filmmaker, YouTube Creator",
+          "inLanguage": "en",
+          "isPartOf": {
+            "@id": "https://mihaimpop.github.io/#website"
+          },
+          "about": {
+            "@id": "https://mihaimpop.github.io/#person"
+          },
+          "mainEntity": {
+            "@id": "https://mihaimpop.github.io/#person"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://mihaimpop.github.io/favicon.svg"
+          }
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body>
+  <a class="skipLink" href="#express">Skip to main content</a>
   <div class="hud" id="M_hud" aria-label="HUD">
     <div class="leftHud">
       <button class="logoBtn" id="logoBtn" aria-label="Logo">
-        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M3 22V4h4.2l5.8 9.4L18.8 4H23v18h-3.9V10.8l-5 8.2h-2.2l-5-8.2V22H3z" fill="currentColor"/>
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <path d="M3 22V4h4.2l5.8 9.4L18.8 4H23v18h-3.9V10.8l-5 8.2h-2.2l-5-8.2V22H3z" fill="currentColor" />
         </svg>
       </button>
     </div>
 
     <div class="rightHud">
       <button class="btn playBtn" id="M_playBtn" type="button">PLAY</button>
-      <button class="menuBtn" id="M_menuBtn" type="button" aria-label="Open controls" aria-controls="M_controlsMenu" aria-expanded="false">
+      <button class="menuBtn" id="M_menuBtn" type="button" aria-label="Open controls" aria-controls="M_controlsMenu"
+        aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
@@ -45,7 +144,7 @@
 
         <div class="metaRow">
           <div class="left">
-            <span class="metaKey">Cluj-Napoca · full-stack · music · story</span>
+            <span class="metaKey">Mihai Pop · Cluj-Napoca · full-stack · music · film</span>
           </div>
         </div>
       </div>
@@ -65,31 +164,36 @@
   <main class="wrap" id="express">
     <div class="expressHead">
       <span>EXPRESS</span>
-      <b>Everything important, fast.</b>
+      <b>Quick hits.</b>
     </div>
 
-    <p class="note" style="margin:14px 0 0;">
-      I build software end-to-end. I like shipping real things, not just talking about them — and I care how it feels when it lands.
-    </p>
+    <p class="note" style="margin:14px 0 0;font-family: var(--mono);">
+      I build full-stack and ship what I make: code, music, film. If it doesn't feel right, it's not done. </p>
 
     <div class="list" role="list">
       <div class="linkRow" role="listitem">
         <strong>Code</strong>
-        <em><a href="https://github.com/" target="_blank" rel="noreferrer">github</a> ✦ <a href="#" target="_blank" rel="noreferrer">featured repo</a></em>
+        <em><a href="https://github.com/mihaimpop" target="_blank" rel="me noopener noreferrer">github</a> ✦ <a
+            href="https://github.com/mihaimpop/toMono" target="_blank" rel="noopener noreferrer">featured repo</a></em>
       </div>
       <div class="linkRow" role="listitem">
         <strong>Video</strong>
-        <em><a href="#" target="_blank" rel="noreferrer">youtube</a> ✦ <a href="#" target="_blank" rel="noreferrer">shorts</a></em>
-      </div>
-      <div class="linkRow" role="listitem">
-        <strong>Music</strong>
-        <em><a href="#" target="_blank" rel="noreferrer">listen</a> ✦ <a href="#" target="_blank" rel="noreferrer">demos</a></em>
+        <em><a href="https://www.youtube.com/@meMihai" target="_blank" rel="me noopener noreferrer">youtube</a></em>
       </div>
       <div class="linkRow" role="listitem">
         <strong>Contact</strong>
-        <em><a href="mailto:you@yourdomain.com">email</a> ✦ <a href="#" target="_blank" rel="noreferrer">linkedin</a></em>
+        <em><a href="mailto:contact@mihaipop.me">email</a> ✦ <a href="https://www.linkedin.com/in/mihaimpop/"
+            target="_blank" rel="me noopener noreferrer">linkedin</a></em>
       </div>
     </div>
+
+    <nav class="seoLinks" aria-label="More about Mihai Pop">
+      <a href="/mihai-pop.html">profile</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mihai-pop-film.html">film</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mihai-pop-youtube.html">youtube page</a>
+    </nav>
 
     <footer>
       <span>© <span id="M_year"></span> MIHAI</span>
@@ -109,6 +213,18 @@
     </div>
   </div>
 
+  <noscript>
+    <section class="wrap noScriptNote">
+      <h2>Mihai Pop</h2>
+      <p>This site includes interactive visuals. JavaScript is currently disabled, so the animation experience is
+        unavailable.</p>
+      <p>Direct links: <a href="https://github.com/mihaimpop">GitHub</a>, <a
+          href="https://www.youtube.com/@meMihai">YouTube</a>, <a
+          href="https://www.linkedin.com/in/mihaimpop/">LinkedIn</a>.</p>
+    </section>
+  </noscript>
+
   <script type="module" src="assets/js/main.js"></script>
 </body>
+
 </html>
