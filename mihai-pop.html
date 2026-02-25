@@ -6,28 +6,45 @@
   <title>Mihai Pop - Official Profile | Full-Stack Engineer, Film, YouTube</title>
   <meta name="description" content="Official Mihai Pop profile page with verified links to engineering work, film direction, and YouTube content." />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-  <link rel="canonical" href="https://mihaimpop.github.io/mihai-pop.html" />
+  <link rel="canonical" href="https://mihaipop.me/mihai-pop.html" />
+  <link rel="alternate" hreflang="en" href="https://mihaipop.me/mihai-pop.html" />
+  <link rel="alternate" hreflang="x-default" href="https://mihaipop.me/mihai-pop.html" />
   <meta property="og:type" content="profile" />
   <meta property="og:site_name" content="Mihai Pop" />
   <meta property="og:title" content="Mihai Pop - Official Profile" />
   <meta property="og:description" content="Central profile for Mihai Pop: software engineering, film, and YouTube." />
-  <meta property="og:url" content="https://mihaimpop.github.io/mihai-pop.html" />
-  <meta property="og:image" content="https://mihaimpop.github.io/favicon.svg" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://mihaipop.me/mihai-pop.html" />
+  <meta property="og:image" content="https://mihaipop.me/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Mihai Pop - Official Profile" />
   <meta name="twitter:description" content="Official profile hub for Mihai Pop projects and channels." />
-  <meta name="twitter:image" content="https://mihaimpop.github.io/favicon.svg" />
+  <meta name="twitter:image" content="https://mihaipop.me/og-image.png" />
   <link rel="stylesheet" href="assets/css/profile.css" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
           "@type": "Person",
-          "@id": "https://mihaimpop.github.io/#person",
+          "@id": "https://mihaipop.me/#person",
           "name": "Mihai Pop",
-          "url": "https://mihaimpop.github.io/",
+          "url": "https://mihaipop.me/",
+          "identifier": {
+            "@type": "PropertyValue",
+            "propertyID": "email",
+            "value": "contact@mihaipop.me"
+          },
+          "mainEntityOfPage": {
+            "@id": "https://mihaipop.me/mihai-pop.html#page"
+          },
+          "image": {
+            "@id": "https://mihaipop.me/#site-logo"
+          },
           "jobTitle": ["Full-Stack Engineer", "Filmmaker", "YouTube Creator"],
           "sameAs": [
             "https://github.com/mihaimpop",
@@ -36,20 +53,47 @@
           ]
         },
         {
+          "@type": "WebSite",
+          "@id": "https://mihaipop.me/#website",
+          "url": "https://mihaipop.me/",
+          "name": "Mihai Pop",
+          "inLanguage": "en"
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://mihaipop.me/#site-logo",
+          "url": "https://mihaipop.me/favicon.svg",
+          "contentUrl": "https://mihaipop.me/favicon.svg"
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://mihaipop.me/#site-share-image",
+          "url": "https://mihaipop.me/og-image.png",
+          "contentUrl": "https://mihaipop.me/og-image.png",
+          "width": 1200,
+          "height": 630
+        },
+        {
           "@type": "ProfilePage",
-          "@id": "https://mihaimpop.github.io/mihai-pop.html#page",
-          "url": "https://mihaimpop.github.io/mihai-pop.html",
+          "@id": "https://mihaipop.me/mihai-pop.html#page",
+          "url": "https://mihaipop.me/mihai-pop.html",
           "name": "Mihai Pop - Official Profile",
+          "isPartOf": {
+            "@id": "https://mihaipop.me/#website"
+          },
           "mainEntity": {
-            "@id": "https://mihaimpop.github.io/#person"
+            "@id": "https://mihaipop.me/#person"
           },
           "about": {
-            "@id": "https://mihaimpop.github.io/#person"
+            "@id": "https://mihaipop.me/#person"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://mihaipop.me/#site-share-image"
           }
         },
         {
           "@type": "FAQPage",
-          "@id": "https://mihaimpop.github.io/mihai-pop.html#faq",
+          "@id": "https://mihaipop.me/mihai-pop.html#faq",
           "mainEntity": [
             {
               "@type": "Question",
@@ -94,9 +138,9 @@
         Mihai Pop builds software, directs film stories, and publishes creative video work. This page is the official profile hub for searches like "Mihai Pop", "Mihai Pop film", and "Mihai Pop YouTube".
       </p>
       <div class="quick" aria-label="Quick links">
-        <a class="pill" href="https://github.com/mihaimpop" rel="me noopener noreferrer" target="_blank">GitHub</a>
-        <a class="pill" href="https://www.youtube.com/@meMihai" rel="me noopener noreferrer" target="_blank">YouTube</a>
-        <a class="pill" href="https://www.linkedin.com/in/mihaimpop/" rel="me noopener noreferrer" target="_blank">LinkedIn</a>
+        <a class="pill" href="https://github.com/mihaimpop" rel="me external noopener noreferrer" target="_blank">GitHub</a>
+        <a class="pill" href="https://www.youtube.com/@meMihai" rel="me external noopener noreferrer" target="_blank">YouTube</a>
+        <a class="pill" href="https://www.linkedin.com/in/mihaimpop/" rel="me external noopener noreferrer" target="_blank">LinkedIn</a>
         <a class="pill" href="mailto:contact@mihaipop.me">Email</a>
       </div>
     </section>
@@ -140,9 +184,19 @@
       </article>
       <article class="faqItem">
         <h3>Where can I find Mihai Pop YouTube content?</h3>
-        <p>Use <a href="https://www.youtube.com/@meMihai" target="_blank" rel="me noopener noreferrer">youtube.com/@meMihai</a> or the landing page at <a href="/mihai-pop-youtube.html">/mihai-pop-youtube.html</a>.</p>
+        <p>Use <a href="https://www.youtube.com/@meMihai" target="_blank" rel="me external noopener noreferrer">youtube.com/@meMihai</a> or the landing page at <a href="/mihai-pop-youtube.html">/mihai-pop-youtube.html</a>.</p>
       </article>
     </section>
+
+    <nav class="seoLinks" aria-label="Internal pages">
+      <a href="/">home</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mihai-pop.html">profile</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mihai-pop-film.html">film</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mihai-pop-youtube.html">youtube</a>
+    </nav>
 
     <footer>
       <span>© Mihai Pop</span>

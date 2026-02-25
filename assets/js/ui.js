@@ -1,17 +1,51 @@
 export function initTheme({ root, themeBtn, storageKey = "mihai_theme" }) {
+  const sourceKey = `${storageKey}_source`;
+  const systemThemeQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
   const savedTheme = localStorage.getItem(storageKey);
-  const initialTheme = savedTheme || "light";
+  const savedSource = localStorage.getItem(sourceKey);
+  const hasSavedTheme = savedTheme === "light" || savedTheme === "dark";
+  let manualTheme = savedSource === "manual" && hasSavedTheme;
 
-  function setTheme(theme) {
+  function applyTheme(theme) {
     root.dataset.theme = theme;
-    localStorage.setItem(storageKey, theme);
     themeBtn.textContent = `Theme: ${theme[0].toUpperCase()}${theme.slice(1)}`;
   }
 
-  setTheme(initialTheme);
+  let initialTheme = "light";
+  if (manualTheme) {
+    initialTheme = savedTheme;
+  } else if (systemThemeQuery?.matches) {
+    initialTheme = "dark";
+  }
+  applyTheme(initialTheme);
+
+  function syncWithSystemTheme(event) {
+    if (manualTheme) return;
+    applyTheme(event.matches ? "dark" : "light");
+  }
+
+  if (systemThemeQuery) {
+    if (typeof systemThemeQuery.addEventListener === "function") {
+      systemThemeQuery.addEventListener("change", syncWithSystemTheme);
+    } else if (typeof systemThemeQuery.addListener === "function") {
+      systemThemeQuery.addListener(syncWithSystemTheme);
+    }
+  }
+
   themeBtn.addEventListener("click", () => {
-    setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+    const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+    manualTheme = true;
+    localStorage.setItem(storageKey, nextTheme);
+    localStorage.setItem(sourceKey, "manual");
+    applyTheme(nextTheme);
   });
+
+  function setTheme(theme) {
+    manualTheme = true;
+    localStorage.setItem(storageKey, theme);
+    localStorage.setItem(sourceKey, "manual");
+    applyTheme(theme);
+  }
 
   return setTheme;
 }

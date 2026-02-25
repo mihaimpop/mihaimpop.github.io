@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Mihai Pop">
+  <rect width="1200" height="630" fill="#0b0b10"/>
+  <rect x="40" y="40" width="1120" height="550" fill="#ffffff" fill-opacity="0.12"/>
+  <text x="600" y="300" text-anchor="middle" fill="#ffffff" font-size="92" font-family="Arial, Helvetica, sans-serif" font-weight="700">Mihai Pop</text>
+  <text x="600" y="375" text-anchor="middle" fill="#ffffff" fill-opacity="0.82" font-size="36" font-family="Arial, Helvetica, sans-serif">Full-Stack Engineer - Film - YouTube</text>
+</svg>
