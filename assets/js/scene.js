@@ -594,6 +594,9 @@ export function initTourScene({
   let M_lastX = 0, M_lastY = 0;
   let M_holdCharge = 0;
   let M_lastRotateInputAt = performance.now();
+  let M_touchGestureMode = "none";
+  const M_touchAxisLockDistance = 10;
+  const M_touchVerticalBias = 1.15;
   const M_autoResetDelay = 2.8;
   const M_autoResetRamp = 1.4;
   const M_spinCarryThreshold = 0.055;
@@ -618,8 +621,12 @@ export function initTourScene({
   // Pointer events on canvas (mouse + touch)
   M_canvas.addEventListener("pointerdown", (e)=>{
     if (M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
+    const touchLike = M_isTouchLikePointer(e);
     M_activePointerId = e.pointerId;
-    M_canvas.setPointerCapture?.(e.pointerId);
+    if (!touchLike) {
+      M_canvas.setPointerCapture?.(e.pointerId);
+    }
+    M_touchGestureMode = touchLike ? "pending" : "drag";
     M_down = true;
     M_downAt = performance.now();
     M_lastRotateInputAt = M_downAt;
@@ -627,7 +634,7 @@ export function initTourScene({
     M_downStartY = e.clientY;
     M_dragTravel = 0;
     M_holdCharge = 0;
-    M_grab = 1.0;
+    M_grab = touchLike ? 0.0 : 1.0;
     M_inertiaRotX = 0.0;
     M_inertiaRotY = 0.0;
 
@@ -642,6 +649,25 @@ export function initTourScene({
     M_setPointerFromEvent(e);
 
     if (M_down){
+      if (M_touchGestureMode === "pending" && M_isTouchLikePointer(e)) {
+        const totalDx = e.clientX - M_downStartX;
+        const totalDy = e.clientY - M_downStartY;
+        const absTotalX = Math.abs(totalDx);
+        const absTotalY = Math.abs(totalDy);
+        if ((absTotalX + absTotalY) < M_touchAxisLockDistance) return;
+        if (absTotalY > absTotalX * M_touchVerticalBias) {
+          M_touchGestureMode = "scroll";
+          M_endGrab(e, true);
+          return;
+        }
+        M_touchGestureMode = "drag";
+        M_grab = 1.0;
+        M_canvas.setPointerCapture?.(e.pointerId);
+        M_lastX = e.clientX;
+        M_lastY = e.clientY;
+      }
+      if (M_touchGestureMode === "scroll") return;
+
       const dx = (e.clientX - M_lastX);
       const dy = (e.clientY - M_lastY);
       if (Math.abs(dx) + Math.abs(dy) > 0.01){
@@ -679,6 +705,7 @@ export function initTourScene({
     if (M_activePointerId !== null && M_canvas.hasPointerCapture?.(M_activePointerId)) {
       M_canvas.releasePointerCapture?.(M_activePointerId);
     }
+    M_touchGestureMode = "none";
     M_activePointerId = null;
     const now = performance.now();
     const tap = !cancelTap && (now - M_downAt < 280) && (M_dragTravel < 14);
