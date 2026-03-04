@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Host: mihaipop.me
 
 Sitemap: https://mihaipop.me/sitemap.xml

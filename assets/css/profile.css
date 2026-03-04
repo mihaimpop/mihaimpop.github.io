@@ -5,7 +5,9 @@
   --hair: rgba(11, 11, 16, 0.14);
   --card: rgba(255, 255, 255, 0.8);
   --max: 980px;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
@@ -23,7 +25,9 @@ body {
   background-image:
     radial-gradient(circle at 1px 1px, rgba(11, 11, 16, 0.08) 1px, transparent 0),
     radial-gradient(980px 560px at 84% -12%, rgba(255, 255, 255, 0.48), transparent 62%);
-  background-size: 18px 18px, auto;
+  background-size:
+    18px 18px,
+    auto;
   color: var(--fg);
   font-family: var(--sans);
 }
@@ -68,6 +72,18 @@ a:hover {
   font-family: var(--mono);
   font-size: 12px;
   background: var(--card);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
 }
 
 .hero {
@@ -144,6 +160,46 @@ ul {
   background: var(--card);
 }
 
+.identity {
+  border-bottom: 1px solid var(--hair);
+  padding: 16px 0 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.factRow {
+  margin: 0;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: var(--card);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.factRow dt {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.factRow dd {
+  margin: 0;
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .faq {
   display: grid;
   gap: 10px;
@@ -207,6 +263,10 @@ footer {
 
 @media (max-width: 760px) {
   .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .facts {
     grid-template-columns: 1fr;
   }
 }
