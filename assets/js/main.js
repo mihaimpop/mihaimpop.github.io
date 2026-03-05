@@ -1,5 +1,4 @@
 import { initTheme, initDrawer, initHudMenu } from "./ui.js";
-import { initTourScene } from "./scene.js";
 
 const M_root = document.documentElement;
 
@@ -43,17 +42,44 @@ const M_drawerApi = initDrawer({
   playBtn: M_dom.playBtn,
 });
 
-const M_sceneApi = initTourScene({
-  root: M_root,
-  canvas: M_dom.canvas,
-  tour: M_dom.tour,
-  tourToggle: M_dom.tourToggle,
-  caption: M_dom.caption,
-  headline: M_dom.headline,
-  subline: M_dom.subline,
-  scrollHint: M_dom.scrollHint,
-  reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
-});
+let M_sceneApi = null;
+
+function M_whenIdle(callback) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(() => callback(), { timeout: 1200 });
+    return;
+  }
+  window.setTimeout(callback, 200);
+}
+
+function M_startScene() {
+  // Load the heavy tour module after first paint so controls stay responsive.
+  M_whenIdle(() => {
+    import("./scene.js")
+      .then(({ initTourScene }) => {
+        M_sceneApi = initTourScene({
+          root: M_root,
+          canvas: M_dom.canvas,
+          tour: M_dom.tour,
+          tourToggle: M_dom.tourToggle,
+          caption: M_dom.caption,
+          headline: M_dom.headline,
+          subline: M_dom.subline,
+          scrollHint: M_dom.scrollHint,
+          reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
+        });
+      })
+      .catch(() => {
+        M_sceneApi = null;
+      });
+  });
+}
+
+if (document.readyState === "complete") {
+  M_startScene();
+} else {
+  window.addEventListener("load", M_startScene, { once: true });
+}
 
 M_dom.logoBtn.addEventListener("click", () => {
   M_drawerApi.closeDrawer();
