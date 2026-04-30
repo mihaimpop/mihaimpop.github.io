@@ -601,10 +601,13 @@ export function initTourScene({
   let M_attention = 0.0;
   let M_tapBurst = 0.0;
   let M_lastPointerAt = performance.now();
+  let M_orbiterInteraction = 0.0;
+  let M_orbitRadiusSmooth = 1.62;
+  let M_orbitSpeedSmooth = 0.48;
   function M_isTouchLikePointer(e){
     return e?.pointerType === "touch" || e?.pointerType === "pen";
   }
-  function M_setPointerFromEvent(e){
+  function M_setPointerFromEvent(e, { addEnergy = false } = {}){
     const rect = M_canvasRect || M_canvas.getBoundingClientRect();
     const rw = Math.max(1, rect.width || 1);
     const rh = Math.max(1, rect.height || 1);
@@ -619,7 +622,7 @@ export function initTourScene({
     const now = performance.now();
     const pointerDt = Math.max(16, now - M_lastPointerAt);
     const pointerDelta = Math.hypot(M_ptrNX - prevX, M_ptrNY - prevY);
-    if (pointerDelta > 0.0001) {
+    if (addEnergy && pointerDelta > 0.0001) {
       M_pointerEnergy = Math.max(M_pointerEnergy, Math.min(1, pointerDelta * (820 / pointerDt)));
     }
     M_lastPointerAt = now;
@@ -693,7 +696,7 @@ export function initTourScene({
     M_inertiaRotX = 0.0;
     M_inertiaRotY = 0.0;
 
-    M_setPointerFromEvent(e);
+    M_setPointerFromEvent(e, { addEnergy: true });
     M_pointerEnergy = Math.max(M_pointerEnergy, touchLike ? 0.46 : 0.34);
     M_lastX = e.clientX; M_lastY = e.clientY;
 
@@ -702,7 +705,7 @@ export function initTourScene({
 
   M_canvas.addEventListener("pointermove", (e)=>{
     if (M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
-    M_setPointerFromEvent(e);
+    M_setPointerFromEvent(e, { addEnergy: M_down });
 
     if (M_down){
       if (M_touchGestureMode === "pending" && M_isTouchLikePointer(e)) {
@@ -899,6 +902,7 @@ export function initTourScene({
   let M_turbSmooth = 0.10;
   let M_floatSpeed = 1.0;
   let M_wireDarkMode = false;
+  let M_orbiterDarkMode = null;
 
   const M_form = { rails:0, coil:0, ribbon:0 };
   const M_baseC = new THREE.Color(), M_c1 = new THREE.Color(), M_c2 = new THREE.Color(), M_c3 = new THREE.Color();
@@ -1083,6 +1087,12 @@ export function initTourScene({
       M_wireMat.depthTest = !themeDark;
       M_wireMat.blending = themeDark ? THREE.AdditiveBlending : THREE.NormalBlending;
       M_wireMat.needsUpdate = true;
+    }
+    if (themeDark !== M_orbiterDarkMode) {
+      M_orbiterDarkMode = themeDark;
+      M_orbiterMat.color.setHex(themeDark ? 0xffffff : 0x05060a);
+      M_orbiterMat.blending = themeDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+      M_orbiterMat.needsUpdate = true;
     }
 
     // decay FX
@@ -1316,7 +1326,11 @@ export function initTourScene({
     const ptrTargets = M_pointerTargets();
     const attentionTarget = ptrTargets.recenterTouch ? 0.0 : M_clamp01(1.10 - Math.hypot(ptrTargets.x, ptrTargets.y) * 0.56);
     M_attention = M_damp(M_attention, attentionTarget, ptrTargets.recenterTouch ? 4.0 : 7.5, dt);
-    const responsiveScale = 1.0 + M_attention * 0.025 + M_pointerEnergy * 0.022 + M_tapBurst * 0.035;
+    const orbiterInteractionTarget = ptrTargets.recenterTouch
+      ? 0.0
+      : Math.max(M_attention * 0.62, M_grab * 0.84, M_pointerEnergy * 0.56, M_tapBurst * 0.75);
+    M_orbiterInteraction = M_damp(M_orbiterInteraction, orbiterInteractionTarget, ptrTargets.recenterTouch ? 5.5 : 7.0, dt);
+    const responsiveScale = 1.0 + M_tapBurst * 0.035;
     const mascotScale = M_damp(M_mascot.scale.x, M_targetScale * introScale * brandScale * responsiveScale, 7.5, dt);
     M_mascot.scale.setScalar(mascotScale);
 
@@ -1355,10 +1369,15 @@ export function initTourScene({
       }
     }
 
-    const pointerIntent = 1.0 + M_attention * 0.34 + M_pointerEnergy * 0.42;
-    const ptrYawTarget = ptrTargets.x * (M_down ? 0.16 : 0.24) * pointerIntent;
-    const ptrPitchTarget = ptrTargets.y * (M_down ? 0.10 : 0.15) * pointerIntent;
-    const ptrLambda = ptrTargets.recenterTouch ? 5.5 : (10.0 + M_pointerEnergy * 5.0);
+    const passivePointerIntent = ptrTargets.recenterTouch ? 0.0 : (0.82 + M_attention * 0.16);
+    const pointerIntent = M_down
+      ? (1.0 + M_attention * 0.20 + M_pointerEnergy * 0.28)
+      : passivePointerIntent;
+    const ptrYawTarget = ptrTargets.x * (M_down ? 0.16 : 0.20) * pointerIntent;
+    const ptrPitchTarget = ptrTargets.y * (M_down ? 0.10 : 0.13) * pointerIntent;
+    const ptrLambda = ptrTargets.recenterTouch
+      ? 5.5
+      : (M_down ? (10.0 + M_pointerEnergy * 5.0) : ((M_lastPointerType === "touch" || M_lastPointerType === "pen") ? 6.5 : 5.8));
     M_ptrRotY = M_damp(M_ptrRotY, ptrYawTarget, ptrLambda, dt);
     M_ptrRotX = M_damp(M_ptrRotX, ptrPitchTarget, ptrLambda, dt);
 
@@ -1375,23 +1394,26 @@ export function initTourScene({
     M_coil.rotation.x = time * (0.30 + M_overdrive*0.45);
     M_ribbon.rotation.y = -time * (0.25 + M_overdrive*0.35);
 
-    const orbiterEnergy = Math.max(M_form.rails * 0.20, M_overdrive * 0.42, M_pointerEnergy * 0.28, M_attention * 0.14, M_tapBurst * 0.30);
-    M_orbiterMat.opacity = M_damp(M_orbiterMat.opacity, orbiterEnergy * (themeDark ? 0.38 : 0.24), 8.0, dt);
-    const orbitRadius = 1.62 + M_attention * 0.06 + M_overdrive * 0.07;
-    const orbitSpeed = 0.46 + M_overdrive * 0.32 + M_pointerEnergy * 0.42 + M_tapBurst * 0.24;
+    const orbiterEnergy = Math.max(M_form.rails * 0.18, M_overdrive * 0.38, M_pointerEnergy * 0.25, M_tapBurst * 0.30, M_orbiterInteraction * 0.42);
+    M_orbiterMat.opacity = M_damp(M_orbiterMat.opacity, orbiterEnergy * (themeDark ? 0.42 : 0.40), 8.0, dt);
+    const orbitRadiusTarget = 1.60 + M_orbiterInteraction * 0.12 + M_overdrive * 0.08 + M_tapBurst * 0.07;
+    const orbitSpeedTarget = 0.46 + M_orbiterInteraction * 0.20 + M_overdrive * 0.24 + M_pointerEnergy * 0.20 + M_tapBurst * 0.20;
+    M_orbitRadiusSmooth = M_damp(M_orbitRadiusSmooth, orbitRadiusTarget, 5.5, dt);
+    M_orbitSpeedSmooth = M_damp(M_orbitSpeedSmooth, orbitSpeedTarget, 5.0, dt);
+    const bobAmp = 0.045 + M_orbiterInteraction * 0.035;
     for (let i=0;i<M_orbiterCount;i++){
       const phase = M_orbiterPhases[i];
       const dir = M_orbiterDirs[i];
-      const angle = phase + time * orbitSpeed * dir;
+      const angle = phase + time * M_orbitSpeedSmooth * dir;
       const bob = Math.sin(time * (1.35 + i * 0.08) + phase);
-      const leanX = ptrTargets.x * (0.08 + M_pointerEnergy * 0.06);
-      const leanY = -ptrTargets.y * (0.06 + M_pointerEnergy * 0.05);
+      const leanX = ptrTargets.x * (0.045 + M_orbiterInteraction * 0.035);
+      const leanY = -ptrTargets.y * (0.035 + M_orbiterInteraction * 0.030);
       M_orbiterDummy.position.set(
-        Math.cos(angle) * orbitRadius + leanX,
-        Math.sin(angle * 1.7 + phase) * 0.44 + bob * 0.08 + leanY,
-        Math.sin(angle) * (1.12 + M_attention * 0.12)
+        Math.cos(angle) * M_orbitRadiusSmooth + leanX,
+        Math.sin(angle * 1.7 + phase) * (0.42 + M_orbiterInteraction * 0.07) + bob * bobAmp + leanY,
+        Math.sin(angle) * (1.10 + M_orbiterInteraction * 0.12)
       );
-      const orbiterScale = (0.64 + (i % 3) * 0.09) * (1.0 + orbiterEnergy * 0.50 + Math.max(0, bob) * 0.08);
+      const orbiterScale = (0.66 + (i % 3) * 0.09) * (1.0 + M_orbiterInteraction * 0.34 + orbiterEnergy * 0.38 + Math.max(0, bob) * 0.06);
       M_orbiterDummy.scale.setScalar(orbiterScale);
       M_orbiterDummy.updateMatrix();
       M_orbiters.setMatrixAt(i, M_orbiterDummy.matrix);
