@@ -7,44 +7,56 @@
     <loc>https://mihaipop.me/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://mihaipop.me/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mihaipop.me/" />
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://mihaipop.me/og-image.png</image:loc>
+      <image:loc>https://mihaipop.me/og-image.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://mihaipop.me/media/home-poster.svg</image:loc>
     </image:image>
   </url>
   <url>
     <loc>https://mihaipop.me/mihai-pop.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://mihaipop.me/mihai-pop.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mihaipop.me/mihai-pop.html" />
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <image:image>
-      <image:loc>https://mihaipop.me/og-image.png</image:loc>
+      <image:loc>https://mihaipop.me/og-image.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://mihaipop.me/media/profile-signal.svg</image:loc>
     </image:image>
   </url>
   <url>
     <loc>https://mihaipop.me/mihai-pop-film.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://mihaipop.me/mihai-pop-film.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mihaipop.me/mihai-pop-film.html" />
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
-      <image:loc>https://mihaipop.me/og-image.png</image:loc>
+      <image:loc>https://mihaipop.me/og-image.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://mihaipop.me/media/film-signal.svg</image:loc>
     </image:image>
   </url>
   <url>
     <loc>https://mihaipop.me/mihai-pop-youtube.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://mihaipop.me/mihai-pop-youtube.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mihaipop.me/mihai-pop-youtube.html" />
-    <lastmod>2026-03-05</lastmod>
+    <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
-      <image:loc>https://mihaipop.me/og-image.png</image:loc>
+      <image:loc>https://mihaipop.me/og-image.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://mihaipop.me/media/youtube-signal.svg</image:loc>
     </image:image>
   </url>
 </urlset>

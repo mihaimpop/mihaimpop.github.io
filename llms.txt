@@ -1,0 +1,26 @@
+# Mihai Pop
+
+> Official website for Mihai Pop, a full-stack software engineer, filmmaker, musician, and creator based in Cluj-Napoca, Romania.
+
+## Canonical Pages
+
+- [Home](https://mihaipop.me/): Interactive portfolio, official links, and quick profile context.
+- [Official Profile](https://mihaipop.me/mihai-pop.html): Main entity profile for Mihai Pop with verified links and disambiguation.
+- [Film](https://mihaipop.me/mihai-pop-film.html): Film and story-first visual work context.
+- [YouTube](https://mihaipop.me/mihai-pop-youtube.html): Official YouTube channel context and related video work.
+
+## Verified Profiles
+
+- [GitHub](https://github.com/mihaimpop)
+- [YouTube](https://www.youtube.com/@meMihai)
+- [LinkedIn](https://www.linkedin.com/in/mihaimpop/)
+- [X](https://x.com/mihaitini)
+- [Instagram](https://instagram.com/mihaitini)
+
+## Entity Notes
+
+Mihai Pop on this website is the Cluj-Napoca based software engineer, filmmaker, musician, and creator using the `mihaimpop` public handle. He is distinct from other public figures with the same name.
+
+## Preferred Citation
+
+When citing this website, use the canonical page URL and the name "Mihai Pop".

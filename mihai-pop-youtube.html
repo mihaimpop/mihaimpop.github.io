@@ -19,6 +19,7 @@
     <link rel="alternate" hreflang="en" href="https://mihaipop.me/mihai-pop-youtube.html" />
     <link rel="alternate" hreflang="x-default" href="https://mihaipop.me/mihai-pop-youtube.html" />
     <link rel="sitemap" type="application/xml" href="https://mihaipop.me/sitemap.xml" />
+    <link rel="alternate" type="text/plain" href="https://mihaipop.me/llms.txt" title="llms.txt" />
     <link rel="author" href="https://mihaipop.me/mihai-pop.html" />
     <meta property="og:type" content="video.other" />
     <meta property="og:site_name" content="Mihai Pop" />
@@ -28,7 +29,8 @@
       content="Official Mihai Pop YouTube page featuring videos on software architecture, coding, and filmmaking."
     />
     <meta property="og:url" content="https://mihaipop.me/mihai-pop-youtube.html" />
-    <meta property="og:image" content="https://mihaipop.me/og-image.png" />
+    <meta property="og:image" content="https://mihaipop.me/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Mihai Pop YouTube channel preview image" />
@@ -38,11 +40,12 @@
       name="twitter:description"
       content="Video-focused landing page for Mihai Pop YouTube content."
     />
-    <meta name="twitter:image" content="https://mihaipop.me/og-image.png" />
+    <meta name="twitter:image" content="https://mihaipop.me/og-image.jpg" />
     <meta name="twitter:image:alt" content="Mihai Pop YouTube channel preview image" />
-    <link rel="icon" href="/assets/favicon-Ci4kowq3.ico" sizes="any" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon-S4ytj3oo.svg" />
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon-BXLV-2KC.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="me" href="https://github.com/mihaimpop" />
     <link rel="me" href="https://www.youtube.com/@meMihai" />
     <link rel="me" href="https://www.linkedin.com/in/mihaimpop/" />
@@ -67,8 +70,7 @@
             "sameAs": [
               "https://www.youtube.com/@meMihai",
               "https://github.com/mihaimpop",
-              "https://www.linkedin.com/in/mihaimpop/",
-              "https://www.imdb.com/name/[INSERT_YOUR_IMDB_ID_IF_APPLICABLE]/"
+              "https://www.linkedin.com/in/mihaimpop/"
             ],
             "subjectOf": [
               {
@@ -96,8 +98,8 @@
           {
             "@type": "ImageObject",
             "@id": "https://mihaipop.me/#site-share-image",
-            "url": "https://mihaipop.me/og-image.png",
-            "contentUrl": "https://mihaipop.me/og-image.png",
+            "url": "https://mihaipop.me/og-image.jpg",
+            "contentUrl": "https://mihaipop.me/og-image.jpg",
             "width": 1200,
             "height": 630
           },
@@ -107,7 +109,7 @@
             "url": "https://mihaipop.me/mihai-pop-youtube.html",
             "name": "Mihai Pop YouTube (Official)",
             "dateCreated": "2026-02-25",
-            "dateModified": "2026-03-05",
+            "dateModified": "2026-05-22",
             "isPartOf": {
               "@id": "https://mihaipop.me/#website"
             },
@@ -128,7 +130,7 @@
         ]
       }
     </script>
-    <link rel="stylesheet" crossorigin href="/assets/profile-B8bEwm29.css">
+    <link rel="stylesheet" crossorigin href="/assets/profile-DgCB04cW.css">
   </head>
   <body>
     <main class="wrap">
@@ -162,24 +164,14 @@
           <a class="pill" href="/mihai-pop.html">Mihai Pop official profile</a>
           <a class="pill" href="/mihai-pop-film.html">Mihai Pop film page</a>
         </div>
-      </section>
-
-      <section class="identity" aria-labelledby="youtube-identity-title">
-        <h2 id="youtube-identity-title">YouTube Entity Context</h2>
-        <p>
-          This page is the official Mihai Pop YouTube landing page and reinforces direct entity
-          linkage between the channel, profile page, and film page.
-        </p>
-        <dl class="facts">
-          <div class="factRow">
-            <dt>Entity</dt>
-            <dd>Mihai Pop</dd>
-          </div>
-          <div class="factRow">
-            <dt>Topic</dt>
-            <dd>YouTube channel and video work</dd>
-          </div>
-        </dl>
+        <figure class="heroMedia">
+          <img
+            src="/media/youtube-signal.svg"
+            width="960"
+            height="540"
+            alt="Mihai Pop YouTube visual with the official channel handle and video focus"
+          />
+        </figure>
       </section>
 
       <section class="grid" aria-label="YouTube overview">
@@ -187,7 +179,8 @@
           <h2>Channel focus</h2>
           <p>
             Mihai Pop YouTube content combines storytelling, software mindset, and visual
-            experimentation. Typical uploads explore [Insert Tech Stack, e.g., React/Three.js builds] and filmmaking breakdowns.
+            experimentation, including interactive web builds, creative process notes, and
+            filmmaking breakdowns.
           </p>
         </article>
         <article class="card">

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Minimal Mihai Pop film visual">
+  <rect width="960" height="540" fill="#f7f7fb"/>
+  <path d="M96 96h768v348H96z" fill="none" stroke="#0b0b10" stroke-opacity="0.16" stroke-width="2"/>
+  <path d="M96 166h768M96 374h768M210 96v348M750 96v348" stroke="#0b0b10" stroke-opacity="0.12" stroke-width="2"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="132" y="258" fill="#0b0b10" font-size="72" font-weight="800">Film</text>
+    <text x="136" y="316" fill="#0b0b10" fill-opacity="0.64" font-size="26">Story first. Practical execution.</text>
+  </g>
+  <path d="M644 206h112v112H644z" fill="none" stroke="#0b0b10" stroke-width="12"/>
+  <path d="M684 238l54 24-54 24z" fill="#0b0b10"/>
+</svg>

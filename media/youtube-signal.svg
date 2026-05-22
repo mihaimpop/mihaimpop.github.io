@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Minimal Mihai Pop YouTube visual">
+  <rect width="960" height="540" fill="#f7f7fb"/>
+  <path d="M96 96h768v348H96z" fill="none" stroke="#0b0b10" stroke-opacity="0.16" stroke-width="2"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="132" y="244" fill="#0b0b10" font-size="68" font-weight="800">YouTube</text>
+    <text x="136" y="304" fill="#0b0b10" fill-opacity="0.64" font-size="26">youtube.com/@meMihai</text>
+  </g>
+  <rect x="640" y="204" width="132" height="84" rx="18" fill="#0b0b10"/>
+  <path d="M694 230l42 16-42 16z" fill="#ffffff"/>
+</svg>
