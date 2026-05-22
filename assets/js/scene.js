@@ -13,28 +13,28 @@ export function initTourScene({
   reducedMotion: M_reducedMotion,
 }) {
   // --------- Helpers
-  const M_clamp01 = (x)=> Math.max(0, Math.min(1, x));
-  const M_lerp = (a,b,t)=> a + (b-a)*t;
-  const M_damp = (c,t,lambda,dt)=> M_lerp(c, t, 1 - Math.exp(-lambda * dt));
-  const M_easeOutCubic = (x)=> 1 - Math.pow(1 - M_clamp01(x), 3);
-  const M_rand = (a,b)=> M_lerp(a, b, Math.random());
+  const M_clamp01 = (x) => Math.max(0, Math.min(1, x));
+  const M_lerp = (a, b, t) => a + (b - a) * t;
+  const M_damp = (c, t, lambda, dt) => M_lerp(c, t, 1 - Math.exp(-lambda * dt));
+  const M_easeOutCubic = (x) => 1 - Math.pow(1 - M_clamp01(x), 3);
+  const M_rand = (a, b) => M_lerp(a, b, Math.random());
   const M_ua = navigator.userAgent || "";
   const M_isFirefox = /firefox/i.test(M_ua);
-  const M_isMobile = /android|iphone|ipad|ipod/i.test(M_ua)
-    || window.matchMedia?.("(pointer: coarse)")?.matches;
+  const M_isMobile =
+    /android|iphone|ipad|ipod/i.test(M_ua) || window.matchMedia?.("(pointer: coarse)")?.matches;
   const M_quality = {
-    maxDpr: M_isMobile ? 1.2 : (M_isFirefox ? 1.35 : 1.75),
+    maxDpr: M_isMobile ? 1.2 : M_isFirefox ? 1.35 : 1.75,
     antialias: !(M_isMobile || M_isFirefox),
-    coreDetail: M_isMobile ? 4 : (M_isFirefox ? 4 : 5),
-    dustCount: M_isMobile ? 360 : (M_isFirefox ? 520 : 700),
-    torusSegments: M_isMobile ? 72 : (M_isFirefox ? 84 : 96),
-    coilTubular: M_isMobile ? 160 : (M_isFirefox ? 190 : 240),
-    coilRadial: M_isMobile ? 14 : (M_isFirefox ? 16 : 18),
-    ribbonSegments: M_isMobile ? 340 : (M_isFirefox ? 420 : 540),
-    ringSegments: M_isMobile ? 72 : (M_isFirefox ? 80 : 96),
+    coreDetail: M_isMobile ? 4 : M_isFirefox ? 4 : 5,
+    dustCount: M_isMobile ? 360 : M_isFirefox ? 520 : 700,
+    torusSegments: M_isMobile ? 72 : M_isFirefox ? 84 : 96,
+    coilTubular: M_isMobile ? 160 : M_isFirefox ? 190 : 240,
+    coilRadial: M_isMobile ? 14 : M_isFirefox ? 16 : 18,
+    ribbonSegments: M_isMobile ? 340 : M_isFirefox ? 420 : 540,
+    ringSegments: M_isMobile ? 72 : M_isFirefox ? 80 : 96,
     orbiterCount: M_isMobile ? 5 : 7,
-    faceSupersample: M_isMobile ? 1 : (M_isFirefox ? 1 : 2),
-    faceFps: M_isMobile ? 30 : (M_isFirefox ? 36 : 60),
+    faceSupersample: M_isMobile ? 1 : M_isFirefox ? 1 : 2,
+    faceFps: M_isMobile ? 30 : M_isFirefox ? 36 : 60,
   };
 
   // --------- Tour enabled
@@ -67,7 +67,7 @@ export function initTourScene({
   function M_cancelCaptionTransition() {
     if (!M_caption) return;
     if (typeof M_caption.getAnimations === "function") {
-      M_caption.getAnimations().forEach((anim)=> anim.cancel());
+      M_caption.getAnimations().forEach((anim) => anim.cancel());
     }
     M_caption.style.opacity = "1";
     M_caption.style.transform = "translate3d(0,0,0)";
@@ -94,7 +94,7 @@ export function initTourScene({
       { duration: 80, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" }
     );
 
-    outAnim.onfinish = ()=> {
+    outAnim.onfinish = () => {
       if (token !== M_captionAnimToken) return;
       M_applyCaption(chapter);
 
@@ -105,7 +105,7 @@ export function initTourScene({
         ],
         { duration: 150, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
       );
-      inAnim.onfinish = ()=> {
+      inAnim.onfinish = () => {
         if (token !== M_captionAnimToken) return;
         M_caption.style.opacity = "1";
         M_caption.style.transform = "translate3d(0,0,0)";
@@ -117,8 +117,8 @@ export function initTourScene({
   const M_renderer = new THREE.WebGLRenderer({
     canvas: M_canvas,
     antialias: M_quality.antialias,
-    alpha:true,
-    powerPreference:"high-performance",
+    alpha: true,
+    powerPreference: "high-performance",
   });
   M_renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, M_quality.maxDpr));
 
@@ -136,11 +136,11 @@ export function initTourScene({
   let M_viewDpr = 0;
   let M_canvasRect = null;
 
-  function M_updateCanvasRect(){
+  function M_updateCanvasRect() {
     M_canvasRect = M_canvas.getBoundingClientRect();
   }
 
-  function M_syncViewportSize(){
+  function M_syncViewportSize() {
     const w = Math.max(1, Math.round(M_canvas.clientWidth || window.innerWidth || 1));
     const h = Math.max(1, Math.round(M_canvas.clientHeight || window.innerHeight || 1));
     const dpr = Math.min(window.devicePixelRatio || 1, M_quality.maxDpr);
@@ -163,37 +163,43 @@ export function initTourScene({
   }
 
   let M_resizeRaf = 0;
-  function M_handleResize(){
+  function M_handleResize() {
     if (M_resizeRaf) return;
-    M_resizeRaf = requestAnimationFrame(()=> {
+    M_resizeRaf = requestAnimationFrame(() => {
       M_resizeRaf = 0;
       M_syncViewportSize();
     });
   }
-  window.addEventListener("resize", M_handleResize, { passive:true });
-  window.visualViewport?.addEventListener("resize", M_handleResize, { passive:true });
-  window.visualViewport?.addEventListener("scroll", M_handleResize, { passive:true });
+  window.addEventListener("resize", M_handleResize, { passive: true });
+  window.visualViewport?.addEventListener("resize", M_handleResize, { passive: true });
+  window.visualViewport?.addEventListener("scroll", M_handleResize, { passive: true });
   M_syncViewportSize();
 
   // --------- Scroll progress
-  function M_rawScrollProgress(){
+  function M_rawScrollProgress() {
     const r = M_tour.getBoundingClientRect();
     const total = r.height - window.innerHeight;
     const scrolled = -r.top;
-    return M_clamp01(total <= 0 ? 0 : (scrolled / total));
+    return M_clamp01(total <= 0 ? 0 : scrolled / total);
   }
 
   // --------- Background dust
   const M_dustCount = M_quality.dustCount;
   const M_dustGeo = new THREE.BufferGeometry();
   const M_dustPos = new Float32Array(M_dustCount * 3);
-  for (let i=0;i<M_dustCount;i++){
-    M_dustPos[i*3+0] = (Math.random()*2-1) * 26;
-    M_dustPos[i*3+1] = (Math.random()*2-1) * 16;
-    M_dustPos[i*3+2] = -Math.random() * 44;
+  for (let i = 0; i < M_dustCount; i++) {
+    M_dustPos[i * 3 + 0] = (Math.random() * 2 - 1) * 26;
+    M_dustPos[i * 3 + 1] = (Math.random() * 2 - 1) * 16;
+    M_dustPos[i * 3 + 2] = -Math.random() * 44;
   }
   M_dustGeo.setAttribute("position", new THREE.BufferAttribute(M_dustPos, 3));
-  const M_dustMat = new THREE.PointsMaterial({ color:0xffffff, size:0.018, transparent:true, opacity:0.10, depthWrite:false });
+  const M_dustMat = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.018,
+    transparent: true,
+    opacity: 0.1,
+    depthWrite: false,
+  });
   const M_dust = new THREE.Points(M_dustGeo, M_dustMat);
   M_scene.add(M_dust);
 
@@ -233,14 +239,14 @@ export function initTourScene({
     uniforms: {
       uTime: { value: 0.0 },
       uP: { value: 0.0 },
-      uTurb: { value: 0.10 },
+      uTurb: { value: 0.1 },
       uOver: { value: 0.0 },
-      uPulse:{ value: 0.0 },
-      uMix:  { value: 0.80 },
+      uPulse: { value: 0.0 },
+      uMix: { value: 0.8 },
       uC1: { value: new THREE.Color(1.0, 0.05, 0.55) },
       uC2: { value: new THREE.Color(0.0, 1.0, 0.85) },
-      uC3: { value: new THREE.Color(1.0, 0.90, 0.10) },
-      uBase:{ value: new THREE.Color(0.98, 0.98, 1.0) }
+      uC3: { value: new THREE.Color(1.0, 0.9, 0.1) },
+      uBase: { value: new THREE.Color(0.98, 0.98, 1.0) },
     },
     vertexShader: `
       precision highp float;
@@ -309,13 +315,19 @@ export function initTourScene({
         col = pow(col, vec3(0.95));
         gl_FragColor = vec4(col, 1.0);
       }
-    `
+    `,
   });
 
   const M_core = new THREE.Mesh(M_coreGeo, M_coreMat);
 
   // Wireframe
-  const M_wireMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.24, depthWrite:false, toneMapped:false });
+  const M_wireMat = new THREE.LineBasicMaterial({
+    color: 0x000000,
+    transparent: true,
+    opacity: 0.24,
+    depthWrite: false,
+    toneMapped: false,
+  });
   const M_wire = new THREE.LineSegments(new THREE.WireframeGeometry(M_coreGeo), M_wireMat);
   M_wire.scale.setScalar(1.0025);
   M_wire.renderOrder = 20;
@@ -327,35 +339,53 @@ export function initTourScene({
   M_scene.add(M_mascot);
 
   // Decorations
-  function M_makeRing(r, y){
+  function M_makeRing(r, y) {
     const geo = new THREE.TorusGeometry(r, 0.02, 6, M_quality.torusSegments);
-    const mat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
     const m = new THREE.Mesh(geo, mat);
     m.position.y = y;
     return m;
   }
   const M_rails = new THREE.Group();
   M_rails.add(M_makeRing(1.58, 0.36));
-  M_rails.add(M_makeRing(1.74, 0.00));
-  M_rails.add(M_makeRing(1.58,-0.36));
+  M_rails.add(M_makeRing(1.74, 0.0));
+  M_rails.add(M_makeRing(1.58, -0.36));
   M_mascot.add(M_rails);
 
   const M_coil = new THREE.Mesh(
     new THREE.TorusKnotGeometry(1.08, 0.13, M_quality.coilTubular, M_quality.coilRadial, 2, 3),
-    new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false })
+    new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
   );
   M_mascot.add(M_coil);
 
-  function M_makeRibbon(){
+  function M_makeRibbon() {
     const pts = [];
     const turns = 150;
-    for (let i=0;i<=turns;i++){
-      const t = i/turns * Math.PI * 2;
-      pts.push(new THREE.Vector3(Math.cos(t)*2.05, Math.sin(t*2.0)*0.46, Math.sin(t)*2.05));
+    for (let i = 0; i <= turns; i++) {
+      const t = (i / turns) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(t) * 2.05, Math.sin(t * 2.0) * 0.46, Math.sin(t) * 2.05));
     }
     const curve = new THREE.CatmullRomCurve3(pts, true);
-    const geo = new THREE.TubeGeometry(curve, M_quality.ribbonSegments, 0.030, 10, true);
-    const mat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
+    const geo = new THREE.TubeGeometry(curve, M_quality.ribbonSegments, 0.03, 10, true);
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
     return new THREE.Mesh(geo, mat);
   }
   const M_ribbon = M_makeRibbon();
@@ -363,33 +393,49 @@ export function initTourScene({
 
   // Neon Halo sprite + rings
   const M_haloCanvas = document.createElement("canvas");
-  M_haloCanvas.width = 256; M_haloCanvas.height = 256;
+  M_haloCanvas.width = 256;
+  M_haloCanvas.height = 256;
   const M_hctx = M_haloCanvas.getContext("2d");
-  const g = M_hctx.createRadialGradient(128,128,20,128,128,120);
+  const g = M_hctx.createRadialGradient(128, 128, 20, 128, 128, 120);
   g.addColorStop(0, "rgba(255,255,255,0.95)");
   g.addColorStop(0.22, "rgba(255,60,180,0.55)");
   g.addColorStop(0.55, "rgba(0,255,220,0.25)");
   g.addColorStop(1, "rgba(255,255,255,0.0)");
   M_hctx.fillStyle = g;
-  M_hctx.beginPath(); M_hctx.arc(128,128,120,0,Math.PI*2); M_hctx.fill();
+  M_hctx.beginPath();
+  M_hctx.arc(128, 128, 120, 0, Math.PI * 2);
+  M_hctx.fill();
 
   const M_haloTex = new THREE.CanvasTexture(M_haloCanvas);
-  if ("colorSpace" in M_haloTex && "SRGBColorSpace" in THREE) M_haloTex.colorSpace = THREE.SRGBColorSpace;
+  if ("colorSpace" in M_haloTex && "SRGBColorSpace" in THREE)
+    M_haloTex.colorSpace = THREE.SRGBColorSpace;
 
-  const M_haloMat = new THREE.SpriteMaterial({ map: M_haloTex, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
+  const M_haloMat = new THREE.SpriteMaterial({
+    map: M_haloTex,
+    transparent: true,
+    opacity: 0.0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
   const M_halo = new THREE.Sprite(M_haloMat);
-  M_halo.scale.set(5.2,5.2,5.2);
-  M_halo.position.set(0, 0.10, -0.2);
+  M_halo.scale.set(5.2, 5.2, 5.2);
+  M_halo.position.set(0, 0.1, -0.2);
   M_mascot.add(M_halo);
 
   const M_haloRings = new THREE.Group();
   const ringGeo = new THREE.RingGeometry(1.85, 1.92, M_quality.ringSegments);
-  const ringMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.0, blending: THREE.AdditiveBlending, depthWrite:false });
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
   const ring1 = new THREE.Mesh(ringGeo, ringMat.clone());
   const ring2 = new THREE.Mesh(ringGeo, ringMat.clone());
-  ring2.scale.setScalar(1.10);
-  ring1.rotation.x = Math.PI/2;
-  ring2.rotation.x = Math.PI/2;
+  ring2.scale.setScalar(1.1);
+  ring1.rotation.x = Math.PI / 2;
+  ring2.rotation.x = Math.PI / 2;
   M_haloRings.add(ring1, ring2);
   M_mascot.add(M_haloRings);
 
@@ -402,35 +448,41 @@ export function initTourScene({
   const M_fctx = M_faceCanvas.getContext("2d");
   if (M_fctx) {
     M_fctx.imageSmoothingEnabled = true;
-    M_fctx.imageSmoothingQuality = (M_isMobile || M_isFirefox) ? "medium" : "high";
+    M_fctx.imageSmoothingQuality = M_isMobile || M_isFirefox ? "medium" : "high";
   }
   const M_faceTex = new THREE.CanvasTexture(M_faceCanvas);
   M_faceTex.generateMipmaps = false;
   M_faceTex.minFilter = THREE.LinearFilter;
   M_faceTex.magFilter = THREE.LinearFilter;
-  if ("colorSpace" in M_faceTex && "SRGBColorSpace" in THREE) M_faceTex.colorSpace = THREE.SRGBColorSpace;
+  if ("colorSpace" in M_faceTex && "SRGBColorSpace" in THREE)
+    M_faceTex.colorSpace = THREE.SRGBColorSpace;
 
-  const M_faceMat = new THREE.SpriteMaterial({ map: M_faceTex, transparent:true, depthTest:false, depthWrite:false });
+  const M_faceMat = new THREE.SpriteMaterial({
+    map: M_faceTex,
+    transparent: true,
+    depthTest: false,
+    depthWrite: false,
+  });
   const M_face = new THREE.Sprite(M_faceMat);
   M_face.scale.set(1.18, 1.18, 1.18);
-  M_face.position.set(0, 0.07, 1.40);
+  M_face.position.set(0, 0.07, 1.4);
   M_face.renderOrder = 999;
   M_mascot.add(M_face);
 
   const M_orbiterCount = M_quality.orbiterCount;
   const M_orbiterGeo = new THREE.SphereGeometry(0.032, M_isMobile ? 8 : 10, M_isMobile ? 6 : 8);
   const M_orbiterMat = new THREE.MeshBasicMaterial({
-    color:0xffffff,
-    transparent:true,
-    opacity:0.0,
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.0,
     blending: THREE.AdditiveBlending,
-    depthWrite:false,
+    depthWrite: false,
   });
   const M_orbiters = new THREE.InstancedMesh(M_orbiterGeo, M_orbiterMat, M_orbiterCount);
   const M_orbiterDummy = new THREE.Object3D();
   const M_orbiterPhases = new Float32Array(M_orbiterCount);
   const M_orbiterDirs = new Float32Array(M_orbiterCount);
-  for (let i=0;i<M_orbiterCount;i++){
+  for (let i = 0; i < M_orbiterCount; i++) {
     M_orbiterPhases[i] = (i / M_orbiterCount) * Math.PI * 2 + M_rand(-0.16, 0.16);
     M_orbiterDirs[i] = i % 2 === 0 ? 1 : -1;
   }
@@ -438,17 +490,33 @@ export function initTourScene({
   M_mascot.add(M_orbiters);
 
   // Face state
-  let M_blink=0, M_blinkTimer=0, M_nextBlink=1.2 + Math.random()*2.2;
-  let M_mouth=0.24, M_brow=0.06, M_lookX=0, M_lookY=0, M_squint=0, M_grin=0.25;
-  let M_browTilt=0.03, M_mouthWidth=0.08, M_mouthY=-0.01, M_eyeWide=0.02, M_eyeGap=0.0;
-  let M_browAsym=-0.02, M_browCurve=0.06;
-  let M_eyeTilt=0.0, M_pupilSize=0.0, M_pupilLift=0.0;
-  let M_mouthOpen=0.04, M_mouthSkew=0.06, M_mouthPinch=-0.03;
+  let M_blink = 0,
+    M_blinkTimer = 0,
+    M_nextBlink = 1.2 + Math.random() * 2.2;
+  let M_mouth = 0.24,
+    M_brow = 0.06,
+    M_lookX = 0,
+    M_lookY = 0,
+    M_squint = 0,
+    M_grin = 0.25;
+  let M_browTilt = 0.03,
+    M_mouthWidth = 0.08,
+    M_mouthY = -0.01,
+    M_eyeWide = 0.02,
+    M_eyeGap = 0.0;
+  let M_browAsym = -0.02,
+    M_browCurve = 0.06;
+  let M_eyeTilt = 0.0,
+    M_pupilSize = 0.0,
+    M_pupilLift = 0.0;
+  let M_mouthOpen = 0.04,
+    M_mouthSkew = 0.06,
+    M_mouthPinch = -0.03;
   let M_winkKick = 0;
   const M_faceFrameInterval = 1 / Math.max(1, M_quality.faceFps);
   let M_faceFrameAcc = M_faceFrameInterval;
 
-  function M_drawFace(){
+  function M_drawFace() {
     const ctx = M_fctx;
     const w = M_faceSize;
     const h = M_faceSize;
@@ -458,46 +526,48 @@ export function initTourScene({
 
     ctx.save();
     ctx.globalAlpha = 0.08;
-    ctx.beginPath(); ctx.arc(w/2, h/2, 102, 0, Math.PI*2);
-    ctx.fillStyle="#ffffff"; ctx.fill();
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, 102, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
     ctx.restore();
 
-    const eyeY = 106 + M_lookY*10;
-    const eyeX = 78 + M_eyeGap*10;
-    const px = M_lookX*12;
-    const py = M_lookY*10 + M_pupilLift*3.5;
-    const eyeOpenBase = Math.max(0.04, (1.0 + M_eyeWide*0.40) - M_blink - M_squint*0.48);
-    const eyeOpenL = Math.max(0.04, eyeOpenBase - M_winkKick*0.92 - M_browAsym*0.08);
-    const eyeOpenR = Math.max(0.04, eyeOpenBase - M_winkKick*0.18 + M_browAsym*0.08);
-    const eyeRX = 22 + M_eyeWide*5;
-    const eyeRY = 18 + M_eyeWide*3;
+    const eyeY = 106 + M_lookY * 10;
+    const eyeX = 78 + M_eyeGap * 10;
+    const px = M_lookX * 12;
+    const py = M_lookY * 10 + M_pupilLift * 3.5;
+    const eyeOpenBase = Math.max(0.04, 1.0 + M_eyeWide * 0.4 - M_blink - M_squint * 0.48);
+    const eyeOpenL = Math.max(0.04, eyeOpenBase - M_winkKick * 0.92 - M_browAsym * 0.08);
+    const eyeOpenR = Math.max(0.04, eyeOpenBase - M_winkKick * 0.18 + M_browAsym * 0.08);
+    const eyeRX = 22 + M_eyeWide * 5;
+    const eyeRY = 18 + M_eyeWide * 3;
     const eyeTiltL = -M_eyeTilt * 0.24;
     const eyeTiltR = M_eyeTilt * 0.24;
-    const pupilR = Math.max(3.8, 7 + M_pupilSize*2.8);
+    const pupilR = Math.max(3.8, 7 + M_pupilSize * 2.8);
 
-    function eye(cx, open, tilt){
+    function eye(cx, open, tilt) {
       ctx.save();
       ctx.translate(cx, eyeY);
       ctx.rotate(tilt);
       ctx.scale(1, open);
       ctx.beginPath();
-      ctx.ellipse(0,0,eyeRX,eyeRY,0,0,Math.PI*2);
+      ctx.ellipse(0, 0, eyeRX, eyeRY, 0, 0, Math.PI * 2);
       ctx.fillStyle = "#ffffff";
       ctx.fill();
       ctx.restore();
 
       ctx.beginPath();
-      ctx.arc(cx + px, eyeY + py + tilt*5, pupilR, 0, Math.PI*2);
+      ctx.arc(cx + px, eyeY + py + tilt * 5, pupilR, 0, Math.PI * 2);
       ctx.fillStyle = "#0b0b10";
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(cx + px - 3, eyeY + py - 3 + tilt*4, Math.max(1.6, pupilR*0.28), 0, Math.PI*2);
+      ctx.arc(cx + px - 3, eyeY + py - 3 + tilt * 4, Math.max(1.6, pupilR * 0.28), 0, Math.PI * 2);
       ctx.fillStyle = "rgba(255,255,255,0.86)";
       ctx.fill();
     }
-    eye(w/2 - eyeX, eyeOpenL, eyeTiltL);
-    eye(w/2 + eyeX, eyeOpenR, eyeTiltR);
+    eye(w / 2 - eyeX, eyeOpenL, eyeTiltL);
+    eye(w / 2 + eyeX, eyeOpenR, eyeTiltR);
 
     ctx.save();
     ctx.strokeStyle = "#0b0b10";
@@ -505,52 +575,52 @@ export function initTourScene({
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     const browLift = M_brow * 16;
-    function brow(cx, side){
+    function brow(cx, side) {
       const asym = M_browAsym * side;
-      const y = eyeY - 34 - browLift - asym*7;
-      const tilt = (M_grin*4 + M_browTilt*12) * side;
-      const arc = -8 - M_browCurve*8 + Math.abs(asym)*2;
+      const y = eyeY - 34 - browLift - asym * 7;
+      const tilt = (M_grin * 4 + M_browTilt * 12) * side;
+      const arc = -8 - M_browCurve * 8 + Math.abs(asym) * 2;
       ctx.beginPath();
-      ctx.moveTo(cx - 20, y + tilt*0.10);
+      ctx.moveTo(cx - 20, y + tilt * 0.1);
       ctx.quadraticCurveTo(cx, y + arc, cx + 20, y + tilt);
       ctx.stroke();
     }
-    brow(w/2-eyeX, -1);
-    brow(w/2+eyeX, 1);
+    brow(w / 2 - eyeX, -1);
+    brow(w / 2 + eyeX, 1);
     ctx.restore();
 
     ctx.save();
-    ctx.translate(w/2, 168 + M_mouthY*14);
+    ctx.translate(w / 2, 168 + M_mouthY * 14);
     ctx.strokeStyle = "#0b0b10";
     ctx.lineWidth = 7.5;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    const mouthOpen = Math.max(0.0, M_mouthOpen + M_overdrive*0.06);
-    const mouthW = 35 * (1.0 + M_mouthWidth*0.36) * (1.0 - M_mouthPinch*0.22);
-    const smile = (M_grin*12 + M_mouth*8) - mouthOpen*5;
+    const mouthOpen = Math.max(0.0, M_mouthOpen + M_overdrive * 0.06);
+    const mouthW = 35 * (1.0 + M_mouthWidth * 0.36) * (1.0 - M_mouthPinch * 0.22);
+    const smile = M_grin * 12 + M_mouth * 8 - mouthOpen * 5;
     const skew = M_mouthSkew * 9;
     const upperY = -smile * 0.55;
-    const lowerY = 7 + mouthOpen*18 + M_mouth*3;
+    const lowerY = 7 + mouthOpen * 18 + M_mouth * 3;
 
     ctx.beginPath();
     ctx.moveTo(-mouthW, 0);
     ctx.quadraticCurveTo(skew, upperY, mouthW, 0);
     ctx.stroke();
 
-    if (mouthOpen > 0.08){
+    if (mouthOpen > 0.08) {
       ctx.beginPath();
-      ctx.moveTo(-mouthW*0.88, 2);
-      ctx.quadraticCurveTo(skew, lowerY, mouthW*0.88, 2);
+      ctx.moveTo(-mouthW * 0.88, 2);
+      ctx.quadraticCurveTo(skew, lowerY, mouthW * 0.88, 2);
       ctx.stroke();
 
       ctx.save();
-      ctx.globalAlpha = 0.12 + mouthOpen*0.20;
+      ctx.globalAlpha = 0.12 + mouthOpen * 0.2;
       ctx.fillStyle = "#0b0b10";
       ctx.beginPath();
-      ctx.moveTo(-mouthW*0.86, 1);
-      ctx.quadraticCurveTo(skew, upperY + 2, mouthW*0.86, 1);
-      ctx.quadraticCurveTo(skew, lowerY - 2, -mouthW*0.86, 1);
+      ctx.moveTo(-mouthW * 0.86, 1);
+      ctx.quadraticCurveTo(skew, upperY + 2, mouthW * 0.86, 1);
+      ctx.quadraticCurveTo(skew, lowerY - 2, -mouthW * 0.86, 1);
       ctx.fill();
       ctx.restore();
     }
@@ -572,9 +642,9 @@ export function initTourScene({
   let M_brandBurst = 0;
   let M_brandScaleKick = 0;
 
-  let M_overdrive = 0.0;     // charged by hold
-  let M_neon = 0.0;          // toggled by double tap
-  let M_grab = 0.0;          // while dragging
+  let M_overdrive = 0.0; // charged by hold
+  let M_neon = 0.0; // toggled by double tap
+  let M_grab = 0.0; // while dragging
   let M_grabRotX = 0.0;
   let M_grabRotY = 0.0;
   let M_inertiaRotX = 0.0;
@@ -593,10 +663,12 @@ export function initTourScene({
   const M_introDur = 1.35;
 
   // pointer tracking (for face + orientation)
-  let M_ptrNX = 0, M_ptrNY = 0;
+  let M_ptrNX = 0,
+    M_ptrNY = 0;
   let M_lastPointerType = "mouse";
   let M_touchContact = false;
-  let M_ptrRotX = 0, M_ptrRotY = 0;
+  let M_ptrRotX = 0,
+    M_ptrRotY = 0;
   let M_pointerEnergy = 0.0;
   let M_attention = 0.0;
   let M_tapBurst = 0.0;
@@ -604,15 +676,15 @@ export function initTourScene({
   let M_orbiterInteraction = 0.0;
   let M_orbitRadiusSmooth = 1.62;
   let M_orbitSpeedSmooth = 0.48;
-  function M_isTouchLikePointer(e){
+  function M_isTouchLikePointer(e) {
     return e?.pointerType === "touch" || e?.pointerType === "pen";
   }
-  function M_setPointerFromEvent(e, { addEnergy = false } = {}){
+  function M_setPointerFromEvent(e, { addEnergy = false } = {}) {
     const rect = M_canvasRect || M_canvas.getBoundingClientRect();
     const rw = Math.max(1, rect.width || 1);
     const rh = Math.max(1, rect.height || 1);
-    const x = (("clientX" in e) ? e.clientX : (e.touches?.[0]?.clientX ?? rect.left + rect.width/2));
-    const y = (("clientY" in e) ? e.clientY : (e.touches?.[0]?.clientY ?? rect.top + rect.height/2));
+    const x = "clientX" in e ? e.clientX : (e.touches?.[0]?.clientX ?? rect.left + rect.width / 2);
+    const y = "clientY" in e ? e.clientY : (e.touches?.[0]?.clientY ?? rect.top + rect.height / 2);
     const prevX = M_ptrNX;
     const prevY = M_ptrNY;
     const nx = ((x - rect.left) / rw) * 2 - 1;
@@ -626,12 +698,15 @@ export function initTourScene({
       M_pointerEnergy = Math.max(M_pointerEnergy, Math.min(1, pointerDelta * (820 / pointerDt)));
     }
     M_lastPointerAt = now;
-    M_lastPointerType = (typeof e.pointerType === "string" && e.pointerType)
-      ? e.pointerType
-      : (e.touches ? "touch" : "mouse");
+    M_lastPointerType =
+      typeof e.pointerType === "string" && e.pointerType
+        ? e.pointerType
+        : e.touches
+          ? "touch"
+          : "mouse";
   }
-  function M_pointerTargets(){
-    const touchLike = (M_lastPointerType === "touch" || M_lastPointerType === "pen");
+  function M_pointerTargets() {
+    const touchLike = M_lastPointerType === "touch" || M_lastPointerType === "pen";
     const recenterTouch = touchLike && !M_down && !M_touchContact && M_activePointerId === null;
     return {
       x: recenterTouch ? 0.0 : M_ptrNX,
@@ -644,10 +719,12 @@ export function initTourScene({
   let M_down = false;
   let M_activePointerId = null;
   let M_downAt = 0;
-  let M_downStartX = 0, M_downStartY = 0;
+  let M_downStartX = 0,
+    M_downStartY = 0;
   let M_dragTravel = 0;
   let M_lastTapTime = 0;
-  let M_lastX = 0, M_lastY = 0;
+  let M_lastX = 0,
+    M_lastY = 0;
   let M_holdCharge = 0;
   let M_lastRotateInputAt = performance.now();
   let M_touchGestureMode = "none";
@@ -658,25 +735,27 @@ export function initTourScene({
   const M_spinCarryThreshold = 0.055;
   const M_spinSettleThreshold = 0.022;
 
-  function M_toggleNeon(){ M_neon = (M_neon > 0.5) ? 0.0 : 1.0; }
-  function M_thump(){
+  function M_toggleNeon() {
+    M_neon = M_neon > 0.5 ? 0.0 : 1.0;
+  }
+  function M_thump() {
     M_fxPulse = 1.0;
     M_tapBurst = 1.0;
-    M_root.style.setProperty("--pulse","1");
-    setTimeout(()=> M_root.style.setProperty("--pulse","0"), 120);
+    M_root.style.setProperty("--pulse", "1");
+    setTimeout(() => M_root.style.setProperty("--pulse", "0"), 120);
   }
-  function M_wink(){
+  function M_wink() {
     M_winkKick = 1.0;
   }
-  function M_fidget(){
+  function M_fidget() {
     const dir = Math.random() < 0.5 ? -1 : 1;
     M_fidgetRotY += 0.24 * dir;
-    M_fidgetRotX += (Math.random()*0.14 - 0.07);
+    M_fidgetRotX += Math.random() * 0.14 - 0.07;
     M_fidgetFace = 1.0;
   }
 
   // Pointer events on canvas (mouse + touch)
-  M_canvas.addEventListener("pointerdown", (e)=>{
+  M_canvas.addEventListener("pointerdown", (e) => {
     if (M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
     M_updateCanvasRect();
     const touchLike = M_isTouchLikePointer(e);
@@ -698,67 +777,76 @@ export function initTourScene({
 
     M_setPointerFromEvent(e, { addEnergy: true });
     M_pointerEnergy = Math.max(M_pointerEnergy, touchLike ? 0.46 : 0.34);
-    M_lastX = e.clientX; M_lastY = e.clientY;
+    M_lastX = e.clientX;
+    M_lastY = e.clientY;
 
     // tap reactions are handled on pointerup to avoid triggering during drags
   });
 
-  M_canvas.addEventListener("pointermove", (e)=>{
-    if (M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
-    M_setPointerFromEvent(e, { addEnergy: M_down });
+  M_canvas.addEventListener(
+    "pointermove",
+    (e) => {
+      if (M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
+      M_setPointerFromEvent(e, { addEnergy: M_down });
 
-    if (M_down){
-      if (M_touchGestureMode === "pending" && M_isTouchLikePointer(e)) {
-        const totalDx = e.clientX - M_downStartX;
-        const totalDy = e.clientY - M_downStartY;
-        const absTotalX = Math.abs(totalDx);
-        const absTotalY = Math.abs(totalDy);
-        if ((absTotalX + absTotalY) < M_touchAxisLockDistance) return;
-        if (absTotalY > absTotalX * M_touchVerticalBias) {
-          M_touchGestureMode = "scroll";
-          M_endGrab(e, true);
-          return;
+      if (M_down) {
+        if (M_touchGestureMode === "pending" && M_isTouchLikePointer(e)) {
+          const totalDx = e.clientX - M_downStartX;
+          const totalDy = e.clientY - M_downStartY;
+          const absTotalX = Math.abs(totalDx);
+          const absTotalY = Math.abs(totalDy);
+          if (absTotalX + absTotalY < M_touchAxisLockDistance) return;
+          if (absTotalY > absTotalX * M_touchVerticalBias) {
+            M_touchGestureMode = "scroll";
+            M_endGrab(e, true);
+            return;
+          }
+          M_touchGestureMode = "drag";
+          M_grab = 1.0;
+          M_canvas.setPointerCapture?.(e.pointerId);
+          M_lastX = e.clientX;
+          M_lastY = e.clientY;
         }
-        M_touchGestureMode = "drag";
-        M_grab = 1.0;
-        M_canvas.setPointerCapture?.(e.pointerId);
+        if (M_touchGestureMode === "scroll") return;
+
+        const dx = e.clientX - M_lastX;
+        const dy = e.clientY - M_lastY;
+        if (Math.abs(dx) + Math.abs(dy) > 0.01) {
+          M_lastRotateInputAt = performance.now();
+        }
         M_lastX = e.clientX;
         M_lastY = e.clientY;
+        M_dragTravel = Math.max(
+          M_dragTravel,
+          Math.hypot(e.clientX - M_downStartX, e.clientY - M_downStartY)
+        );
+        const touchYawBoost = e.pointerType === "touch" ? 2.1 : 1.0;
+        const touchPitchBoost = e.pointerType === "touch" ? 1.25 : 1.0;
+
+        // Earth-like control: strong yaw acceleration, stable/limited pitch.
+        M_grabRotY += dx * (0.0078 * touchYawBoost);
+        M_grabRotX += dy * (0.0042 * touchPitchBoost);
+
+        // Capture residual angular velocity for release inertia.
+        const impulseY = dx * (0.0046 * touchYawBoost);
+        const impulseX = dy * (0.0018 * touchPitchBoost);
+        M_inertiaRotY = M_lerp(M_inertiaRotY, impulseY, e.pointerType === "touch" ? 0.7 : 0.56);
+        M_inertiaRotX = M_lerp(M_inertiaRotX, impulseX, e.pointerType === "touch" ? 0.62 : 0.5);
+        M_inertiaRotY = Math.max(-0.42, Math.min(0.42, M_inertiaRotY));
+        M_inertiaRotX = Math.max(-0.14, Math.min(0.14, M_inertiaRotX));
+
+        // Soft-limit pitch so the face doesn't settle on the bottom hemisphere.
+        const pitchOver = Math.abs(M_grabRotX) - M_pitchLimit;
+        if (pitchOver > 0) {
+          M_grabRotX -= Math.sign(M_grabRotX) * pitchOver * 0.82;
+          M_inertiaRotX *= 0.58;
+        }
       }
-      if (M_touchGestureMode === "scroll") return;
+    },
+    { passive: true }
+  );
 
-      const dx = (e.clientX - M_lastX);
-      const dy = (e.clientY - M_lastY);
-      if (Math.abs(dx) + Math.abs(dy) > 0.01){
-        M_lastRotateInputAt = performance.now();
-      }
-      M_lastX = e.clientX; M_lastY = e.clientY;
-      M_dragTravel = Math.max(M_dragTravel, Math.hypot(e.clientX - M_downStartX, e.clientY - M_downStartY));
-      const touchYawBoost = e.pointerType === "touch" ? 2.1 : 1.0;
-      const touchPitchBoost = e.pointerType === "touch" ? 1.25 : 1.0;
-
-      // Earth-like control: strong yaw acceleration, stable/limited pitch.
-      M_grabRotY += dx * (0.0078 * touchYawBoost);
-      M_grabRotX += dy * (0.0042 * touchPitchBoost);
-
-      // Capture residual angular velocity for release inertia.
-      const impulseY = dx * (0.0046 * touchYawBoost);
-      const impulseX = dy * (0.0018 * touchPitchBoost);
-      M_inertiaRotY = M_lerp(M_inertiaRotY, impulseY, e.pointerType === "touch" ? 0.70 : 0.56);
-      M_inertiaRotX = M_lerp(M_inertiaRotX, impulseX, e.pointerType === "touch" ? 0.62 : 0.50);
-      M_inertiaRotY = Math.max(-0.42, Math.min(0.42, M_inertiaRotY));
-      M_inertiaRotX = Math.max(-0.14, Math.min(0.14, M_inertiaRotX));
-
-      // Soft-limit pitch so the face doesn't settle on the bottom hemisphere.
-      const pitchOver = Math.abs(M_grabRotX) - M_pitchLimit;
-      if (pitchOver > 0){
-        M_grabRotX -= Math.sign(M_grabRotX) * pitchOver * 0.82;
-        M_inertiaRotX *= 0.58;
-      }
-    }
-  }, { passive:true });
-
-  function M_endGrab(e, cancelTap = false){
+  function M_endGrab(e, cancelTap = false) {
     if (e && M_activePointerId !== null && e.pointerId !== M_activePointerId) return;
     if (M_isTouchLikePointer(e)) M_touchContact = false;
     if (M_activePointerId !== null && M_canvas.hasPointerCapture?.(M_activePointerId)) {
@@ -767,22 +855,22 @@ export function initTourScene({
     M_touchGestureMode = "none";
     M_activePointerId = null;
     const now = performance.now();
-    const tap = !cancelTap && (now - M_downAt < 280) && (M_dragTravel < 14);
+    const tap = !cancelTap && now - M_downAt < 280 && M_dragTravel < 14;
     M_down = false;
     M_grab = 0.0;
 
-    if (tap){
+    if (tap) {
       // Any tap winks; double tap still toggles neon.
       M_wink();
-      if (now - M_lastTapTime < 320){
+      if (now - M_lastTapTime < 320) {
         M_toggleNeon();
         M_lastTapTime = 0;
-        if (Math.random() < 0.3){
+        if (Math.random() < 0.3) {
           M_fidget();
         }
       } else {
         M_lastTapTime = now;
-        if (Math.random() < 0.5){
+        if (Math.random() < 0.5) {
           M_fidget();
         }
       }
@@ -790,25 +878,25 @@ export function initTourScene({
     }
 
     // release causes thump if charged
-    if (M_holdCharge > 0.25){
+    if (M_holdCharge > 0.25) {
       M_thump();
     }
-    if (M_dragTravel > 6){
+    if (M_dragTravel > 6) {
       M_lastRotateInputAt = now;
     }
   }
 
-  M_canvas.addEventListener("pointerup", (e)=> M_endGrab(e, false));
-  M_canvas.addEventListener("pointercancel", (e)=> M_endGrab(e, true));
-  M_canvas.addEventListener("lostpointercapture", (e)=>{
+  M_canvas.addEventListener("pointerup", (e) => M_endGrab(e, false));
+  M_canvas.addEventListener("pointercancel", (e) => M_endGrab(e, true));
+  M_canvas.addEventListener("lostpointercapture", (e) => {
     if (e.pointerId === M_activePointerId || M_down) M_endGrab(e, true);
   });
-  M_canvas.addEventListener("contextmenu", (e)=> e.preventDefault());
-  window.addEventListener("blur", ()=> {
+  M_canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+  window.addEventListener("blur", () => {
     M_touchContact = false;
     M_endGrab(null, true);
   });
-  document.addEventListener("visibilitychange", ()=>{
+  document.addEventListener("visibilitychange", () => {
     if (document.visibilityState !== "visible") {
       M_touchContact = false;
       M_endGrab(null, true);
@@ -816,36 +904,68 @@ export function initTourScene({
   });
 
   // follow pointer/touch even when not interacting
-  window.addEventListener("pointerdown", (e)=> {
-    if (M_isTouchLikePointer(e)) M_touchContact = true;
-    M_setPointerFromEvent(e);
-  }, { passive:true });
-  window.addEventListener("pointermove", (e)=> {
-    if (M_isTouchLikePointer(e)) M_touchContact = true;
-    M_setPointerFromEvent(e);
-  }, { passive:true });
-  window.addEventListener("pointerup", (e)=> {
-    if (M_isTouchLikePointer(e)) M_touchContact = false;
-  }, { passive:true });
-  window.addEventListener("pointercancel", (e)=> {
-    if (M_isTouchLikePointer(e)) M_touchContact = false;
-  }, { passive:true });
+  window.addEventListener(
+    "pointerdown",
+    (e) => {
+      if (M_isTouchLikePointer(e)) M_touchContact = true;
+      M_setPointerFromEvent(e);
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "pointermove",
+    (e) => {
+      if (M_isTouchLikePointer(e)) M_touchContact = true;
+      M_setPointerFromEvent(e);
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "pointerup",
+    (e) => {
+      if (M_isTouchLikePointer(e)) M_touchContact = false;
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "pointercancel",
+    (e) => {
+      if (M_isTouchLikePointer(e)) M_touchContact = false;
+    },
+    { passive: true }
+  );
   // Fallback for browsers/environments that throttle pointer events during touch scrolling.
-  window.addEventListener("touchstart", (e)=> {
-    M_updateCanvasRect();
-    M_touchContact = e.touches.length > 0;
-    M_setPointerFromEvent(e);
-  }, { passive:true });
-  window.addEventListener("touchmove", (e)=> {
-    M_touchContact = e.touches.length > 0;
-    M_setPointerFromEvent(e);
-  }, { passive:true });
-  window.addEventListener("touchend", (e)=> {
-    M_touchContact = e.touches.length > 0;
-  }, { passive:true });
-  window.addEventListener("touchcancel", ()=> {
-    M_touchContact = false;
-  }, { passive:true });
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      M_updateCanvasRect();
+      M_touchContact = e.touches.length > 0;
+      M_setPointerFromEvent(e);
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "touchmove",
+    (e) => {
+      M_touchContact = e.touches.length > 0;
+      M_setPointerFromEvent(e);
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "touchend",
+    (e) => {
+      M_touchContact = e.touches.length > 0;
+    },
+    { passive: true }
+  );
+  window.addEventListener(
+    "touchcancel",
+    () => {
+      M_touchContact = false;
+    },
+    { passive: true }
+  );
 
   function M_setTourEnabled(enabled, { scrollExpress = false } = {}) {
     M_tourEnabled = enabled;
@@ -888,7 +1008,7 @@ export function initTourScene({
   }
 
   // Tour toggle (no peek mode, no layout jump)
-  M_tourToggle.addEventListener("click", ()=>{
+  M_tourToggle.addEventListener("click", () => {
     const nextEnabled = !M_tourEnabled;
     M_setTourEnabled(nextEnabled, { scrollExpress: !nextEnabled });
   });
@@ -899,23 +1019,52 @@ export function initTourScene({
   let M_lastT = performance.now();
 
   let M_pSmooth = 0;
-  let M_turbSmooth = 0.10;
+  let M_turbSmooth = 0.1;
   let M_floatSpeed = 1.0;
   let M_wireDarkMode = false;
   let M_orbiterDarkMode = null;
 
-  const M_form = { rails:0, coil:0, ribbon:0 };
-  const M_baseC = new THREE.Color(), M_c1 = new THREE.Color(), M_c2 = new THREE.Color(), M_c3 = new THREE.Color();
+  const M_form = { rails: 0, coil: 0, ribbon: 0 };
+  const M_baseC = new THREE.Color(),
+    M_c1 = new THREE.Color(),
+    M_c2 = new THREE.Color(),
+    M_c3 = new THREE.Color();
 
   // face smoothing
-  let M_mouthT=0.24, M_browT=0.06, M_squintT=0.0, M_grinT=0.25;
-  let M_mouthS=0.24, M_browS=0.06, M_squintS=0.0, M_grinS=0.25;
-  let M_browTiltT=0.03, M_mouthWidthT=0.08, M_mouthYT=-0.01, M_eyeWideT=0.02, M_eyeGapT=0.0;
-  let M_browTiltS=0.03, M_mouthWidthS=0.08, M_mouthYS=-0.01, M_eyeWideS=0.02, M_eyeGapS=0.0;
-  let M_browAsymT=-0.02, M_browCurveT=0.06, M_eyeTiltT=0.0, M_pupilSizeT=0.0, M_pupilLiftT=0.0;
-  let M_mouthOpenT=0.04, M_mouthSkewT=0.06, M_mouthPinchT=-0.03;
-  let M_browAsymS=-0.02, M_browCurveS=0.06, M_eyeTiltS=0.0, M_pupilSizeS=0.0, M_pupilLiftS=0.0;
-  let M_mouthOpenS=0.04, M_mouthSkewS=0.06, M_mouthPinchS=-0.03;
+  let M_mouthT = 0.24,
+    M_browT = 0.06,
+    M_squintT = 0.0,
+    M_grinT = 0.25;
+  let M_mouthS = 0.24,
+    M_browS = 0.06,
+    M_squintS = 0.0,
+    M_grinS = 0.25;
+  let M_browTiltT = 0.03,
+    M_mouthWidthT = 0.08,
+    M_mouthYT = -0.01,
+    M_eyeWideT = 0.02,
+    M_eyeGapT = 0.0;
+  let M_browTiltS = 0.03,
+    M_mouthWidthS = 0.08,
+    M_mouthYS = -0.01,
+    M_eyeWideS = 0.02,
+    M_eyeGapS = 0.0;
+  let M_browAsymT = -0.02,
+    M_browCurveT = 0.06,
+    M_eyeTiltT = 0.0,
+    M_pupilSizeT = 0.0,
+    M_pupilLiftT = 0.0;
+  let M_mouthOpenT = 0.04,
+    M_mouthSkewT = 0.06,
+    M_mouthPinchT = -0.03;
+  let M_browAsymS = -0.02,
+    M_browCurveS = 0.06,
+    M_eyeTiltS = 0.0,
+    M_pupilSizeS = 0.0,
+    M_pupilLiftS = 0.0;
+  let M_mouthOpenS = 0.04,
+    M_mouthSkewS = 0.06,
+    M_mouthPinchS = -0.03;
   const M_idleModes = ["smile", "brow", "smug", "smile"];
   let M_idleModeIdx = 0;
   let M_idleMode = M_idleModes[0];
@@ -927,11 +1076,25 @@ export function initTourScene({
   let M_idleSmug = 0.0;
 
   const M_moodTemplate = {
-    mouth:0, brow:0, squint:0, grin:0,
-    browTilt:0, mouthWidth:0, mouthY:0, eyeWide:0, eyeGap:0,
-    browAsym:0, browCurve:0, eyeTilt:0, pupilSize:0, pupilLift:0,
-    mouthOpen:0, mouthSkew:0, mouthPinch:0,
-    lookX:0, lookY:0,
+    mouth: 0,
+    brow: 0,
+    squint: 0,
+    grin: 0,
+    browTilt: 0,
+    mouthWidth: 0,
+    mouthY: 0,
+    eyeWide: 0,
+    eyeGap: 0,
+    browAsym: 0,
+    browCurve: 0,
+    eyeTilt: 0,
+    pupilSize: 0,
+    pupilLift: 0,
+    mouthOpen: 0,
+    mouthSkew: 0,
+    mouthPinch: 0,
+    lookX: 0,
+    lookY: 0,
   };
   const M_moodState = {
     timer: 0.0,
@@ -940,7 +1103,7 @@ export function initTourScene({
     smooth: { ...M_moodTemplate },
   };
 
-  function M_setMoodTargets(next){
+  function M_setMoodTargets(next) {
     const tgt = M_moodState.target;
     tgt.mouth = next.mouth ?? 0;
     tgt.brow = next.brow ?? 0;
@@ -963,7 +1126,7 @@ export function initTourScene({
     tgt.lookY = next.lookY ?? 0;
   }
 
-  function M_pickMood(){
+  function M_pickMood() {
     const side = Math.random() < 0.5 ? -1 : 1;
     const amp = M_rand(0.82, 1.24);
     const roll = Math.random();
@@ -971,7 +1134,7 @@ export function initTourScene({
     let durMin = 1.2;
     let durMax = 2.6;
 
-    if (roll < 0.22){
+    if (roll < 0.22) {
       // Thoughtful / problem-solving.
       next.brow = 0.16 * amp;
       next.squint = 0.08 * amp;
@@ -982,23 +1145,25 @@ export function initTourScene({
       next.mouthSkew = -0.08 * side * amp;
       next.pupilLift = 0.07 * amp;
       next.eyeTilt = 0.05 * side * amp;
-      next.lookX = -0.20 * side * amp;
-      next.lookY = -0.10 * amp;
-      durMin = 1.8; durMax = 3.2;
-    } else if (roll < 0.42){
+      next.lookX = -0.2 * side * amp;
+      next.lookY = -0.1 * amp;
+      durMin = 1.8;
+      durMax = 3.2;
+    } else if (roll < 0.42) {
       // "Remembered a joke."
-      next.mouth = 0.20 * amp;
+      next.mouth = 0.2 * amp;
       next.grin = 0.24 * amp;
       next.mouthOpen = 0.12 * amp;
       next.mouthSkew = 0.16 * side * amp;
-      next.brow = 0.10 * amp;
+      next.brow = 0.1 * amp;
       next.browCurve = 0.14 * amp;
-      next.eyeWide = 0.10 * amp;
+      next.eyeWide = 0.1 * amp;
       next.pupilSize = 0.08 * amp;
       next.lookX = 0.12 * side * amp;
       next.lookY = -0.06 * amp;
-      durMin = 1.4; durMax = 2.6;
-    } else if (roll < 0.58){
+      durMin = 1.4;
+      durMax = 2.6;
+    } else if (roll < 0.58) {
       // Brief frown / skepticism.
       next.mouth = -0.22 * amp;
       next.grin = -0.18 * amp;
@@ -1010,8 +1175,9 @@ export function initTourScene({
       next.mouthOpen = -0.06 * amp;
       next.eyeTilt = 0.04 * side * amp;
       next.lookY = 0.08 * amp;
-      durMin = 1.2; durMax = 2.1;
-    } else if (roll < 0.76){
+      durMin = 1.2;
+      durMax = 2.1;
+    } else if (roll < 0.76) {
       // Curiosity / eyebrow raise.
       next.brow = 0.17 * amp;
       next.browAsym = 0.22 * side * amp;
@@ -1022,38 +1188,41 @@ export function initTourScene({
       next.mouth = 0.05 * amp;
       next.lookX = 0.18 * side * amp;
       next.pupilLift = 0.03 * amp;
-      durMin = 1.0; durMax = 1.9;
-    } else if (roll < 0.90){
+      durMin = 1.0;
+      durMax = 1.9;
+    } else if (roll < 0.9) {
       // Smug micro-smirk.
       next.mouth = 0.08 * amp;
       next.grin = 0.18 * amp;
       next.squint = 0.07 * amp;
       next.mouthSkew = 0.18 * side * amp;
-      next.mouthPinch = 0.10 * amp;
+      next.mouthPinch = 0.1 * amp;
       next.eyeTilt = 0.09 * side * amp;
       next.pupilSize = 0.05 * amp;
-      next.browAsym = -0.10 * side * amp;
+      next.browAsym = -0.1 * side * amp;
       next.lookX = 0.12 * side * amp;
       next.lookY = -0.04 * amp;
-      durMin = 1.4; durMax = 2.4;
+      durMin = 1.4;
+      durMax = 2.4;
     } else {
       // Neutral drift, still alive.
       next.mouth = M_rand(-0.04, 0.06);
       next.brow = M_rand(-0.03, 0.05);
-      next.squint = M_rand(0.00, 0.04);
+      next.squint = M_rand(0.0, 0.04);
       next.grin = M_rand(-0.02, 0.08);
       next.mouthOpen = M_rand(-0.02, 0.04);
       next.pupilLift = M_rand(-0.03, 0.03);
       next.lookX = M_rand(-0.08, 0.08);
       next.lookY = M_rand(-0.06, 0.06);
-      durMin = 1.1; durMax = 2.6;
+      durMin = 1.1;
+      durMax = 2.6;
     }
 
     next.eyeGap = (next.eyeGap ?? 0) + M_rand(-0.03, 0.03);
     next.mouthWidth = (next.mouthWidth ?? 0) + M_rand(-0.04, 0.04);
-    if (Math.random() < 0.18){
+    if (Math.random() < 0.18) {
       next.lookX = (next.lookX ?? 0) + M_rand(-0.14, 0.14);
-      next.lookY = (next.lookY ?? 0) + M_rand(-0.10, 0.10);
+      next.lookY = (next.lookY ?? 0) + M_rand(-0.1, 0.1);
     }
 
     M_setMoodTargets(next);
@@ -1063,23 +1232,23 @@ export function initTourScene({
 
   M_pickMood();
 
-  function M_renderOnce(){
+  function M_renderOnce() {
     const now = performance.now();
-    const dt = Math.min(0.05, (now - M_lastT)/1000);
+    const dt = Math.min(0.05, (now - M_lastT) / 1000);
     M_lastT = now;
     const time = now * 0.001;
 
-    const themeDark = (M_root.dataset.theme === "dark");
+    const themeDark = M_root.dataset.theme === "dark";
 
     // wire color / contrast
     const wirePulse = 0.5 + 0.5 * Math.sin(time * 1.35 + M_pSmooth * 6.2);
-    if (themeDark){
+    if (themeDark) {
       M_wireMat.color.setRGB(0.86, 0.94, 1.0);
-      M_wireMat.opacity = 0.34 + M_overdrive*0.16 + M_fxPulse*0.12 + wirePulse*0.05;
+      M_wireMat.opacity = 0.34 + M_overdrive * 0.16 + M_fxPulse * 0.12 + wirePulse * 0.05;
       M_wire.scale.setScalar(1.0068);
     } else {
       M_wireMat.color.setHex(0x040508);
-      M_wireMat.opacity = 0.18 + M_overdrive*0.04;
+      M_wireMat.opacity = 0.18 + M_overdrive * 0.04;
       M_wire.scale.setScalar(1.0032);
     }
     if (themeDark !== M_wireDarkMode) {
@@ -1107,16 +1276,16 @@ export function initTourScene({
     M_fidgetRotY = M_damp(M_fidgetRotY, 0.0, 9.0, dt);
 
     // Idle cycle: smile -> eyebrow raise -> smug -> smile ...
-    if (!M_down && !M_introActive){
+    if (!M_down && !M_introActive) {
       M_idleModeT += dt;
-      if (M_idleModeT >= M_idleModeDur){
+      if (M_idleModeT >= M_idleModeDur) {
         M_idleModeIdx = (M_idleModeIdx + 1) % M_idleModes.length;
         M_idleMode = M_idleModes[M_idleModeIdx];
         M_idleModeT = 0.0;
-        if (M_idleMode === "smile") M_idleModeDur = 2.4 + Math.random()*2.0;
-        if (M_idleMode === "brow") M_idleModeDur = 0.8 + Math.random()*0.7;
+        if (M_idleMode === "smile") M_idleModeDur = 2.4 + Math.random() * 2.0;
+        if (M_idleMode === "brow") M_idleModeDur = 0.8 + Math.random() * 0.7;
         if (M_idleMode === "smug") {
-          M_idleModeDur = 1.6 + Math.random()*1.4;
+          M_idleModeDur = 1.6 + Math.random() * 1.4;
           M_idleSmugSign = Math.random() < 0.5 ? -1 : 1;
         }
       }
@@ -1130,7 +1299,7 @@ export function initTourScene({
 
     // Randomized micro-expressions with smooth transitions.
     M_moodState.timer += dt;
-    if (M_moodState.timer >= M_moodState.dur){
+    if (M_moodState.timer >= M_moodState.dur) {
       M_pickMood();
     }
     const moodTarget = M_moodState.target;
@@ -1166,7 +1335,7 @@ export function initTourScene({
     }
 
     let blendIdx = 0;
-    while (blendIdx < M_lastChapterIdx && M_pSmooth >= M_chapters[blendIdx + 1].t){
+    while (blendIdx < M_lastChapterIdx && M_pSmooth >= M_chapters[blendIdx + 1].t) {
       blendIdx += 1;
     }
     const chA = M_chapters[blendIdx];
@@ -1191,7 +1360,7 @@ export function initTourScene({
     }
 
     const chUI = M_chapters[M_uiChapterIdx];
-    if (!M_hasMountedChapterUI || chUI.key !== M_lastKey){
+    if (!M_hasMountedChapterUI || chUI.key !== M_lastKey) {
       const didChange = M_hasMountedChapterUI && chUI.key !== M_lastKey;
       const prevChapterIdx = M_lastUiChapterIdx;
       M_lastKey = chUI.key;
@@ -1210,19 +1379,24 @@ export function initTourScene({
     }
 
     // hold charge -> overdrive
-    if (M_down){
+    if (M_down) {
       M_holdCharge = Math.min(1, M_holdCharge + dt * 0.65);
     } else {
       M_holdCharge = Math.max(0, M_holdCharge - dt * 0.85);
     }
-    const M_overdriveTarget = Math.max(M_holdCharge, M_brandBurst * 0.55, M_pointerEnergy * 0.22, M_tapBurst * 0.18);
+    const M_overdriveTarget = Math.max(
+      M_holdCharge,
+      M_brandBurst * 0.55,
+      M_pointerEnergy * 0.22,
+      M_tapBurst * 0.18
+    );
     M_overdrive = M_damp(M_overdrive, M_overdriveTarget, 8.0, dt);
 
     // motion
     const motTurb = M_lerp(chA.mot.turb, chB.mot.turb, blendT);
     const motFlo = M_lerp(chA.mot.flo, chB.mot.flo, blendT);
-    M_turbSmooth = M_damp(M_turbSmooth, motTurb * (1.0 + M_overdrive*1.35), 5.0, dt);
-    M_floatSpeed = M_damp(M_floatSpeed, motFlo * (1.0 + M_overdrive*0.9), 4.5, dt);
+    M_turbSmooth = M_damp(M_turbSmooth, motTurb * (1.0 + M_overdrive * 1.35), 5.0, dt);
+    M_floatSpeed = M_damp(M_floatSpeed, motFlo * (1.0 + M_overdrive * 0.9), 4.5, dt);
 
     // palette
     const pa = chA.pal;
@@ -1230,22 +1404,22 @@ export function initTourScene({
     M_baseC.setRGB(
       M_lerp(pa.base[0], pb.base[0], blendT),
       M_lerp(pa.base[1], pb.base[1], blendT),
-      M_lerp(pa.base[2], pb.base[2], blendT),
+      M_lerp(pa.base[2], pb.base[2], blendT)
     );
     M_c1.setRGB(
       M_lerp(pa.c1[0], pb.c1[0], blendT),
       M_lerp(pa.c1[1], pb.c1[1], blendT),
-      M_lerp(pa.c1[2], pb.c1[2], blendT),
+      M_lerp(pa.c1[2], pb.c1[2], blendT)
     );
     M_c2.setRGB(
       M_lerp(pa.c2[0], pb.c2[0], blendT),
       M_lerp(pa.c2[1], pb.c2[1], blendT),
-      M_lerp(pa.c2[2], pb.c2[2], blendT),
+      M_lerp(pa.c2[2], pb.c2[2], blendT)
     );
     M_c3.setRGB(
       M_lerp(pa.c3[0], pb.c3[0], blendT),
       M_lerp(pa.c3[1], pb.c3[1], blendT),
-      M_lerp(pa.c3[2], pb.c3[2], blendT),
+      M_lerp(pa.c3[2], pb.c3[2], blendT)
     );
 
     M_coreMat.uniforms.uTime.value = time;
@@ -1264,23 +1438,25 @@ export function initTourScene({
     const formRails = M_lerp(chA.form.rails, chB.form.rails, blendT);
     const formCoil = M_lerp(chA.form.coil, chB.form.coil, blendT);
     const formRibbon = M_lerp(chA.form.ribbon, chB.form.ribbon, blendT);
-    M_form.rails  = M_damp(M_form.rails, formRails, 7.0, dt);
-    M_form.coil   = M_damp(M_form.coil, formCoil, 7.0, dt);
+    M_form.rails = M_damp(M_form.rails, formRails, 7.0, dt);
+    M_form.coil = M_damp(M_form.coil, formCoil, 7.0, dt);
     M_form.ribbon = M_damp(M_form.ribbon, formRibbon, 7.0, dt);
 
-    M_rails.children.forEach((r,i)=> r.material.opacity = (0.10 + i*0.03 + M_overdrive*0.10) * M_form.rails);
-    M_coil.material.opacity = (0.18 + M_overdrive*0.14) * M_form.coil;
-    M_ribbon.material.opacity = (0.16 + M_overdrive*0.12) * M_form.ribbon;
+    M_rails.children.forEach(
+      (r, i) => (r.material.opacity = (0.1 + i * 0.03 + M_overdrive * 0.1) * M_form.rails)
+    );
+    M_coil.material.opacity = (0.18 + M_overdrive * 0.14) * M_form.coil;
+    M_ribbon.material.opacity = (0.16 + M_overdrive * 0.12) * M_form.ribbon;
 
     // neon halo (visible)
-    const haloOn = Math.max(M_neon, M_overdrive*0.55, M_brandBurst * 0.65);
+    const haloOn = Math.max(M_neon, M_overdrive * 0.55, M_brandBurst * 0.65);
     M_haloMat.opacity = M_damp(M_haloMat.opacity, haloOn * (themeDark ? 0.85 : 0.65), 6.0, dt);
-    const haloPulse = 1.0 + (M_fxPulse*0.10) + (M_overdrive*0.08) + (M_brandBurst * 0.12);
+    const haloPulse = 1.0 + M_fxPulse * 0.1 + M_overdrive * 0.08 + M_brandBurst * 0.12;
     M_halo.scale.setScalar(5.2 * haloPulse);
-    ring1.material.opacity = haloOn * (themeDark ? 0.30 : 0.22);
+    ring1.material.opacity = haloOn * (themeDark ? 0.3 : 0.22);
     ring2.material.opacity = haloOn * (themeDark ? 0.22 : 0.18);
-    M_haloRings.rotation.y = time * (0.35 + haloOn*0.25);
-    M_haloRings.rotation.z = -time * (0.20 + haloOn*0.20);
+    M_haloRings.rotation.y = time * (0.35 + haloOn * 0.25);
+    M_haloRings.rotation.z = -time * (0.2 + haloOn * 0.2);
 
     // Keep a frontal camera on scroll so the mascot does not appear to rotate.
     const scrollWave = Math.sin(M_pSmooth * Math.PI);
@@ -1292,7 +1468,7 @@ export function initTourScene({
     M_camera.position.x = M_damp(M_camera.position.x, camX, 3.6, dt);
     M_camera.position.z = M_damp(M_camera.position.z, camZ, 3.6, dt);
     M_camera.position.y = M_damp(M_camera.position.y, camY, 3.6, dt);
-    M_camera.lookAt(0, 0.10, 0);
+    M_camera.lookAt(0, 0.1, 0);
 
     // chapter pose targets (smooth, no twitch on chapter switches)
     const poseYTarget = M_lerp(chA.face.poseY ?? 0, chB.face.poseY ?? 0, blendT);
@@ -1304,7 +1480,7 @@ export function initTourScene({
     let introDepth = 0.0;
     let introSpin = 0.0;
     let introScale = 1.0;
-    if (M_introActive){
+    if (M_introActive) {
       M_introT += dt;
       const ip = M_clamp01(M_introT / M_introDur);
       const ie = M_easeOutCubic(ip);
@@ -1313,29 +1489,42 @@ export function initTourScene({
       introDepth = -rem * 3.0;
       introSpin = rem * (Math.PI * 2.0);
       introScale = 0.74 + ie * 0.26;
-      if (ip >= 1.0){
+      if (ip >= 1.0) {
         M_introActive = false;
       }
     }
 
     // levitation
-    const lev = Math.sin(time * 1.18 * M_floatSpeed) * (0.10 + M_overdrive*0.10);
+    const lev = Math.sin(time * 1.18 * M_floatSpeed) * (0.1 + M_overdrive * 0.1);
     M_mascot.position.y = M_damp(M_mascot.position.y, lev + introLift, 7.5, dt);
     M_mascot.position.z = M_damp(M_mascot.position.z, introDepth, 7.5, dt);
-    const brandScale = 1.0 + M_brandScaleKick * 0.08 + Math.sin(time * 22.0) * (M_brandBurst * 0.03);
+    const brandScale =
+      1.0 + M_brandScaleKick * 0.08 + Math.sin(time * 22.0) * (M_brandBurst * 0.03);
     const ptrTargets = M_pointerTargets();
-    const attentionTarget = ptrTargets.recenterTouch ? 0.0 : M_clamp01(1.10 - Math.hypot(ptrTargets.x, ptrTargets.y) * 0.56);
+    const attentionTarget = ptrTargets.recenterTouch
+      ? 0.0
+      : M_clamp01(1.1 - Math.hypot(ptrTargets.x, ptrTargets.y) * 0.56);
     M_attention = M_damp(M_attention, attentionTarget, ptrTargets.recenterTouch ? 4.0 : 7.5, dt);
     const orbiterInteractionTarget = ptrTargets.recenterTouch
       ? 0.0
       : Math.max(M_attention * 0.62, M_grab * 0.84, M_pointerEnergy * 0.56, M_tapBurst * 0.75);
-    M_orbiterInteraction = M_damp(M_orbiterInteraction, orbiterInteractionTarget, ptrTargets.recenterTouch ? 5.5 : 7.0, dt);
+    M_orbiterInteraction = M_damp(
+      M_orbiterInteraction,
+      orbiterInteractionTarget,
+      ptrTargets.recenterTouch ? 5.5 : 7.0,
+      dt
+    );
     const responsiveScale = 1.0 + M_tapBurst * 0.035;
-    const mascotScale = M_damp(M_mascot.scale.x, M_targetScale * introScale * brandScale * responsiveScale, 7.5, dt);
+    const mascotScale = M_damp(
+      M_mascot.scale.x,
+      M_targetScale * introScale * brandScale * responsiveScale,
+      7.5,
+      dt
+    );
     M_mascot.scale.setScalar(mascotScale);
 
     // Drag/swipe controls orientation with inertia.
-    if (!M_down){
+    if (!M_down) {
       const frameScale = dt * 60.0;
       M_grabRotY += M_inertiaRotY * frameScale;
       M_grabRotX += M_inertiaRotX * frameScale;
@@ -1344,20 +1533,20 @@ export function initTourScene({
     const releaseLambda = M_down ? 14.0 : M_lerp(0.95, 0.18, M_clamp01(spinSpeed / 0.22));
     M_inertiaRotY = M_damp(M_inertiaRotY, 0.0, releaseLambda, dt);
     M_inertiaRotX = M_damp(M_inertiaRotX, 0.0, releaseLambda * 1.35, dt);
-    if (!M_down && spinSpeed > M_spinCarryThreshold){
+    if (!M_down && spinSpeed > M_spinCarryThreshold) {
       M_lastRotateInputAt = now;
     }
 
     const pitchOver = Math.abs(M_grabRotX) - M_pitchLimit;
-    if (pitchOver > 0){
+    if (pitchOver > 0) {
       M_grabRotX -= Math.sign(M_grabRotX) * pitchOver * 0.72;
       M_inertiaRotX *= 0.55;
     }
 
     // Return manual drag offsets to the initial orientation after idle time.
-    if (!M_down && spinSpeed < M_spinSettleThreshold){
+    if (!M_down && spinSpeed < M_spinSettleThreshold) {
       const rotateIdleSec = (now - M_lastRotateInputAt) * 0.001;
-      if (rotateIdleSec > M_autoResetDelay){
+      if (rotateIdleSec > M_autoResetDelay) {
         const autoT = M_clamp01((rotateIdleSec - M_autoResetDelay) / M_autoResetRamp);
         const autoYawLambda = M_lerp(0.0, 2.8, autoT);
         const autoPitchLambda = M_lerp(0.0, 3.3, autoT);
@@ -1369,15 +1558,19 @@ export function initTourScene({
       }
     }
 
-    const passivePointerIntent = ptrTargets.recenterTouch ? 0.0 : (0.82 + M_attention * 0.16);
+    const passivePointerIntent = ptrTargets.recenterTouch ? 0.0 : 0.82 + M_attention * 0.16;
     const pointerIntent = M_down
-      ? (1.0 + M_attention * 0.20 + M_pointerEnergy * 0.28)
+      ? 1.0 + M_attention * 0.2 + M_pointerEnergy * 0.28
       : passivePointerIntent;
-    const ptrYawTarget = ptrTargets.x * (M_down ? 0.16 : 0.20) * pointerIntent;
-    const ptrPitchTarget = ptrTargets.y * (M_down ? 0.10 : 0.13) * pointerIntent;
+    const ptrYawTarget = ptrTargets.x * (M_down ? 0.16 : 0.2) * pointerIntent;
+    const ptrPitchTarget = ptrTargets.y * (M_down ? 0.1 : 0.13) * pointerIntent;
     const ptrLambda = ptrTargets.recenterTouch
       ? 5.5
-      : (M_down ? (10.0 + M_pointerEnergy * 5.0) : ((M_lastPointerType === "touch" || M_lastPointerType === "pen") ? 6.5 : 5.8));
+      : M_down
+        ? 10.0 + M_pointerEnergy * 5.0
+        : M_lastPointerType === "touch" || M_lastPointerType === "pen"
+          ? 6.5
+          : 5.8;
     M_ptrRotY = M_damp(M_ptrRotY, ptrYawTarget, ptrLambda, dt);
     M_ptrRotX = M_damp(M_ptrRotX, ptrPitchTarget, ptrLambda, dt);
 
@@ -1389,31 +1582,50 @@ export function initTourScene({
 
     // deco motion
     M_rails.rotation.y = -M_mascot.rotation.y * 0.9;
-    M_rails.rotation.x = Math.sin(time*0.60) * (0.10 + M_overdrive*0.10) * M_form.rails;
-    M_coil.rotation.y = time * (0.55 + M_overdrive*0.65);
-    M_coil.rotation.x = time * (0.30 + M_overdrive*0.45);
-    M_ribbon.rotation.y = -time * (0.25 + M_overdrive*0.35);
+    M_rails.rotation.x = Math.sin(time * 0.6) * (0.1 + M_overdrive * 0.1) * M_form.rails;
+    M_coil.rotation.y = time * (0.55 + M_overdrive * 0.65);
+    M_coil.rotation.x = time * (0.3 + M_overdrive * 0.45);
+    M_ribbon.rotation.y = -time * (0.25 + M_overdrive * 0.35);
 
-    const orbiterEnergy = Math.max(M_form.rails * 0.18, M_overdrive * 0.38, M_pointerEnergy * 0.25, M_tapBurst * 0.30, M_orbiterInteraction * 0.42);
-    M_orbiterMat.opacity = M_damp(M_orbiterMat.opacity, orbiterEnergy * (themeDark ? 0.42 : 0.40), 8.0, dt);
-    const orbitRadiusTarget = 1.60 + M_orbiterInteraction * 0.12 + M_overdrive * 0.08 + M_tapBurst * 0.07;
-    const orbitSpeedTarget = 0.46 + M_orbiterInteraction * 0.20 + M_overdrive * 0.24 + M_pointerEnergy * 0.20 + M_tapBurst * 0.20;
+    const orbiterEnergy = Math.max(
+      M_form.rails * 0.18,
+      M_overdrive * 0.38,
+      M_pointerEnergy * 0.25,
+      M_tapBurst * 0.3,
+      M_orbiterInteraction * 0.42
+    );
+    M_orbiterMat.opacity = M_damp(
+      M_orbiterMat.opacity,
+      orbiterEnergy * (themeDark ? 0.42 : 0.4),
+      8.0,
+      dt
+    );
+    const orbitRadiusTarget =
+      1.6 + M_orbiterInteraction * 0.12 + M_overdrive * 0.08 + M_tapBurst * 0.07;
+    const orbitSpeedTarget =
+      0.46 +
+      M_orbiterInteraction * 0.2 +
+      M_overdrive * 0.24 +
+      M_pointerEnergy * 0.2 +
+      M_tapBurst * 0.2;
     M_orbitRadiusSmooth = M_damp(M_orbitRadiusSmooth, orbitRadiusTarget, 5.5, dt);
     M_orbitSpeedSmooth = M_damp(M_orbitSpeedSmooth, orbitSpeedTarget, 5.0, dt);
     const bobAmp = 0.045 + M_orbiterInteraction * 0.035;
-    for (let i=0;i<M_orbiterCount;i++){
+    for (let i = 0; i < M_orbiterCount; i++) {
       const phase = M_orbiterPhases[i];
       const dir = M_orbiterDirs[i];
       const angle = phase + time * M_orbitSpeedSmooth * dir;
       const bob = Math.sin(time * (1.35 + i * 0.08) + phase);
       const leanX = ptrTargets.x * (0.045 + M_orbiterInteraction * 0.035);
-      const leanY = -ptrTargets.y * (0.035 + M_orbiterInteraction * 0.030);
+      const leanY = -ptrTargets.y * (0.035 + M_orbiterInteraction * 0.03);
       M_orbiterDummy.position.set(
         Math.cos(angle) * M_orbitRadiusSmooth + leanX,
         Math.sin(angle * 1.7 + phase) * (0.42 + M_orbiterInteraction * 0.07) + bob * bobAmp + leanY,
-        Math.sin(angle) * (1.10 + M_orbiterInteraction * 0.12)
+        Math.sin(angle) * (1.1 + M_orbiterInteraction * 0.12)
       );
-      const orbiterScale = (0.66 + (i % 3) * 0.09) * (1.0 + M_orbiterInteraction * 0.34 + orbiterEnergy * 0.38 + Math.max(0, bob) * 0.06);
+      const orbiterScale =
+        (0.66 + (i % 3) * 0.09) *
+        (1.0 + M_orbiterInteraction * 0.34 + orbiterEnergy * 0.38 + Math.max(0, bob) * 0.06);
       M_orbiterDummy.scale.setScalar(orbiterScale);
       M_orbiterDummy.updateMatrix();
       M_orbiters.setMatrixAt(i, M_orbiterDummy.matrix);
@@ -1422,7 +1634,7 @@ export function initTourScene({
 
     // dust parallax
     M_dust.position.x = M_damp(M_dust.position.x, 0.0, 2.8, dt);
-    M_dust.position.y = M_damp(M_dust.position.y, scrollWave * 0.10, 2.8, dt);
+    M_dust.position.y = M_damp(M_dust.position.y, scrollWave * 0.1, 2.8, dt);
 
     // face follows pointer plus subtle thought drift.
     const moodLookScale = M_down ? 0.42 : 0.72;
@@ -1439,28 +1651,93 @@ export function initTourScene({
     const idleSmugDir = M_idleSmugSign;
     const attentionFace = M_attention * 0.75 + M_pointerEnergy * 0.35 + M_tapBurst * 0.22;
 
-    M_mouthT = M_lerp(chA.face.mouth, chB.face.mouth, blendT) + M_overdrive*0.10 + idleSmileAmt*0.12 + idleSmugAmt*0.08 + moodSmooth.mouth + attentionFace*0.04;
-    M_browT  = M_lerp(chA.face.brow, chB.face.brow, blendT) + M_overdrive*0.08 + idleBrowAmt + moodSmooth.brow + attentionFace*0.06;
-    M_squintT= M_lerp(chA.face.squint, chB.face.squint, blendT) + (M_grab*0.10) + idleSmugAmt*0.16 + moodSmooth.squint - attentionFace*0.03;
-    M_grinT  = M_lerp(chA.face.grin, chB.face.grin, blendT) + M_overdrive*0.14 + idleSmileAmt + idleSmugAmt*0.22 + moodSmooth.grin + attentionFace*0.08;
-    M_browTiltT = M_lerp(chA.face.browTilt ?? 0, chB.face.browTilt ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir + idleBrowAmt*0.04 + moodSmooth.browTilt;
-    M_mouthWidthT = M_lerp(chA.face.mouthWidth ?? 0, chB.face.mouthWidth ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.mouthWidth;
-    M_mouthYT = M_lerp(chA.face.mouthY ?? 0, chB.face.mouthY ?? 0, blendT) - idleSmileAmt*0.02 + moodSmooth.mouthY;
-    M_eyeWideT = M_lerp(chA.face.eyeWide ?? 0, chB.face.eyeWide ?? 0, blendT) + idleBrowAmt*0.16 + M_fidgetFace*0.09 + moodSmooth.eyeWide + attentionFace*0.12;
+    M_mouthT =
+      M_lerp(chA.face.mouth, chB.face.mouth, blendT) +
+      M_overdrive * 0.1 +
+      idleSmileAmt * 0.12 +
+      idleSmugAmt * 0.08 +
+      moodSmooth.mouth +
+      attentionFace * 0.04;
+    M_browT =
+      M_lerp(chA.face.brow, chB.face.brow, blendT) +
+      M_overdrive * 0.08 +
+      idleBrowAmt +
+      moodSmooth.brow +
+      attentionFace * 0.06;
+    M_squintT =
+      M_lerp(chA.face.squint, chB.face.squint, blendT) +
+      M_grab * 0.1 +
+      idleSmugAmt * 0.16 +
+      moodSmooth.squint -
+      attentionFace * 0.03;
+    M_grinT =
+      M_lerp(chA.face.grin, chB.face.grin, blendT) +
+      M_overdrive * 0.14 +
+      idleSmileAmt +
+      idleSmugAmt * 0.22 +
+      moodSmooth.grin +
+      attentionFace * 0.08;
+    M_browTiltT =
+      M_lerp(chA.face.browTilt ?? 0, chB.face.browTilt ?? 0, blendT) +
+      idleSmugAmt * 0.18 * idleSmugDir +
+      idleBrowAmt * 0.04 +
+      moodSmooth.browTilt;
+    M_mouthWidthT =
+      M_lerp(chA.face.mouthWidth ?? 0, chB.face.mouthWidth ?? 0, blendT) +
+      idleSmugAmt * 0.08 +
+      moodSmooth.mouthWidth;
+    M_mouthYT =
+      M_lerp(chA.face.mouthY ?? 0, chB.face.mouthY ?? 0, blendT) -
+      idleSmileAmt * 0.02 +
+      moodSmooth.mouthY;
+    M_eyeWideT =
+      M_lerp(chA.face.eyeWide ?? 0, chB.face.eyeWide ?? 0, blendT) +
+      idleBrowAmt * 0.16 +
+      M_fidgetFace * 0.09 +
+      moodSmooth.eyeWide +
+      attentionFace * 0.12;
     M_eyeGapT = M_lerp(chA.face.eyeGap ?? 0, chB.face.eyeGap ?? 0, blendT) + moodSmooth.eyeGap;
-    M_browAsymT = M_lerp(chA.face.browAsym ?? 0, chB.face.browAsym ?? 0, blendT) + idleSmugAmt*0.10*idleSmugDir + moodSmooth.browAsym;
-    M_browCurveT = M_lerp(chA.face.browCurve ?? 0, chB.face.browCurve ?? 0, blendT) + idleBrowAmt*0.22 + moodSmooth.browCurve;
-    M_eyeTiltT = M_lerp(chA.face.eyeTilt ?? 0, chB.face.eyeTilt ?? 0, blendT) + idleSmugAmt*0.14*idleSmugDir + moodSmooth.eyeTilt;
-    M_pupilSizeT = M_lerp(chA.face.pupilSize ?? 0, chB.face.pupilSize ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.pupilSize + attentionFace*0.08;
-    M_pupilLiftT = M_lerp(chA.face.pupilLift ?? 0, chB.face.pupilLift ?? 0, blendT) - idleSmileAmt*0.04 + moodSmooth.pupilLift;
-    M_mouthOpenT = M_lerp(chA.face.mouthOpen ?? 0, chB.face.mouthOpen ?? 0, blendT) + M_overdrive*0.08 + idleSmugAmt*0.06 + M_fidgetFace*0.10 + moodSmooth.mouthOpen + attentionFace*0.06;
-    M_mouthSkewT = M_lerp(chA.face.mouthSkew ?? 0, chB.face.mouthSkew ?? 0, blendT) + idleSmugAmt*0.18*idleSmugDir + moodSmooth.mouthSkew;
-    M_mouthPinchT = M_lerp(chA.face.mouthPinch ?? 0, chB.face.mouthPinch ?? 0, blendT) + idleSmugAmt*0.08 + moodSmooth.mouthPinch;
+    M_browAsymT =
+      M_lerp(chA.face.browAsym ?? 0, chB.face.browAsym ?? 0, blendT) +
+      idleSmugAmt * 0.1 * idleSmugDir +
+      moodSmooth.browAsym;
+    M_browCurveT =
+      M_lerp(chA.face.browCurve ?? 0, chB.face.browCurve ?? 0, blendT) +
+      idleBrowAmt * 0.22 +
+      moodSmooth.browCurve;
+    M_eyeTiltT =
+      M_lerp(chA.face.eyeTilt ?? 0, chB.face.eyeTilt ?? 0, blendT) +
+      idleSmugAmt * 0.14 * idleSmugDir +
+      moodSmooth.eyeTilt;
+    M_pupilSizeT =
+      M_lerp(chA.face.pupilSize ?? 0, chB.face.pupilSize ?? 0, blendT) +
+      idleSmugAmt * 0.08 +
+      moodSmooth.pupilSize +
+      attentionFace * 0.08;
+    M_pupilLiftT =
+      M_lerp(chA.face.pupilLift ?? 0, chB.face.pupilLift ?? 0, blendT) -
+      idleSmileAmt * 0.04 +
+      moodSmooth.pupilLift;
+    M_mouthOpenT =
+      M_lerp(chA.face.mouthOpen ?? 0, chB.face.mouthOpen ?? 0, blendT) +
+      M_overdrive * 0.08 +
+      idleSmugAmt * 0.06 +
+      M_fidgetFace * 0.1 +
+      moodSmooth.mouthOpen +
+      attentionFace * 0.06;
+    M_mouthSkewT =
+      M_lerp(chA.face.mouthSkew ?? 0, chB.face.mouthSkew ?? 0, blendT) +
+      idleSmugAmt * 0.18 * idleSmugDir +
+      moodSmooth.mouthSkew;
+    M_mouthPinchT =
+      M_lerp(chA.face.mouthPinch ?? 0, chB.face.mouthPinch ?? 0, blendT) +
+      idleSmugAmt * 0.08 +
+      moodSmooth.mouthPinch;
 
     M_mouthS = M_damp(M_mouthS, M_mouthT, 8.0, dt);
-    M_browS  = M_damp(M_browS,  M_browT,  8.0, dt);
-    M_squintS= M_damp(M_squintS, M_squintT, 10.0, dt);
-    M_grinS  = M_damp(M_grinS,  M_grinT,  8.0, dt);
+    M_browS = M_damp(M_browS, M_browT, 8.0, dt);
+    M_squintS = M_damp(M_squintS, M_squintT, 10.0, dt);
+    M_grinS = M_damp(M_grinS, M_grinT, 8.0, dt);
     M_browTiltS = M_damp(M_browTiltS, M_browTiltT, 8.0, dt);
     M_mouthWidthS = M_damp(M_mouthWidthS, M_mouthWidthT, 8.0, dt);
     M_mouthYS = M_damp(M_mouthYS, M_mouthYT, 8.0, dt);
@@ -1495,56 +1772,66 @@ export function initTourScene({
 
     // blink
     M_blinkTimer += dt;
-    if (M_blinkTimer > M_nextBlink){ M_blinkTimer = 0; M_nextBlink = 1.3 + Math.random()*2.6; }
+    if (M_blinkTimer > M_nextBlink) {
+      M_blinkTimer = 0;
+      M_nextBlink = 1.3 + Math.random() * 2.6;
+    }
     const bp = Math.min(1.0, M_blinkTimer / 0.14);
-    const bc = (bp < 0.5) ? (bp/0.5) : (1.0 - (bp-0.5)/0.5);
+    const bc = bp < 0.5 ? bp / 0.5 : 1.0 - (bp - 0.5) / 0.5;
     const blinkActive = M_blinkTimer < 0.14;
-    const blinkTarget = blinkActive ? (1.0 - bc) : 0.0;
+    const blinkTarget = blinkActive ? 1.0 - bc : 0.0;
     M_blink = M_damp(M_blink, blinkTarget, 18.0, dt);
 
     M_faceFrameAcc += dt;
-    if (M_faceFrameAcc >= M_faceFrameInterval){
+    if (M_faceFrameAcc >= M_faceFrameInterval) {
       M_drawFace();
       M_faceFrameAcc = M_faceFrameAcc % M_faceFrameInterval;
     }
     M_renderer.render(M_scene, M_camera);
   }
 
-  function M_animLoop(){
+  function M_animLoop() {
     M_raf = requestAnimationFrame(M_animLoop);
     M_renderOnce();
   }
-  function M_start(){
+  function M_start() {
     if (M_running) return;
     M_running = true;
     M_lastT = performance.now();
-    if (!M_introStarted){
+    if (!M_introStarted) {
       M_introStarted = true;
       M_introActive = true;
       M_introT = 0.0;
     }
     M_animLoop();
   }
-  function M_stop(){
+  function M_stop() {
     M_running = false;
     cancelAnimationFrame(M_raf);
   }
 
   // Visible-only animation
-  const M_io = new IntersectionObserver(([e])=>{
-    if (!M_tourEnabled) {
-      if (M_running) M_stop();
-      return;
-    }
-    if (e.isIntersecting) M_start();
-    else M_stop();
-  }, { threshold: 0.05 });
+  const M_io = new IntersectionObserver(
+    ([e]) => {
+      if (!M_tourEnabled) {
+        if (M_running) M_stop();
+        return;
+      }
+      if (e.isIntersecting) M_start();
+      else M_stop();
+    },
+    { threshold: 0.05 }
+  );
   M_io.observe(M_tour);
 
-  window.addEventListener("scroll", ()=>{
-    if (!M_tourEnabled) return;
-    if (!M_running) M_renderOnce();
-  }, { passive:true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!M_tourEnabled) return;
+      if (!M_running) M_renderOnce();
+    },
+    { passive: true }
+  );
 
   // Start
   M_renderOnce();

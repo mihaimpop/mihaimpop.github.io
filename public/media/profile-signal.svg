@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Minimal Mihai Pop profile visual">
+  <rect width="960" height="540" fill="#f7f7fb"/>
+  <path d="M96 96h768v348H96z" fill="none" stroke="#0b0b10" stroke-opacity="0.16" stroke-width="2"/>
+  <g transform="translate(128 146)">
+    <rect width="168" height="168" fill="#0b0b10"/>
+    <path d="M32 131V37h22l30 50 30-50h22v94h-19V70l-26 43H77L51 70v61H32z" fill="#ffffff"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="344" y="228" fill="#0b0b10" font-size="58" font-weight="800">Mihai Pop</text>
+    <text x="348" y="286" fill="#0b0b10" fill-opacity="0.64" font-size="26">Software. Film. Video.</text>
+  </g>
+</svg>

@@ -68,6 +68,7 @@ function M_startScene() {
           scrollHint: M_dom.scrollHint,
           reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
         });
+        M_dom.tour.classList.add("sceneReady");
       })
       .catch(() => {
         M_sceneApi = null;

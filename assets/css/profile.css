@@ -108,6 +108,22 @@ h1 {
   max-width: 82ch;
 }
 
+.heroMedia {
+  margin: 4px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  border-radius: 18px;
+  background: var(--card);
+}
+
+.heroMedia img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -158,46 +174,6 @@ ul {
   font-family: var(--mono);
   font-size: 12px;
   background: var(--card);
-}
-
-.identity {
-  border-bottom: 1px solid var(--hair);
-  padding: 16px 0 18px;
-  display: grid;
-  gap: 10px;
-}
-
-.facts {
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.factRow {
-  margin: 0;
-  border: 1px solid var(--hair);
-  border-radius: 14px;
-  background: var(--card);
-  padding: 10px;
-  display: grid;
-  gap: 6px;
-}
-
-.factRow dt {
-  margin: 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.factRow dd {
-  margin: 0;
-  color: var(--fg);
-  font-size: 14px;
-  line-height: 1.5;
 }
 
 .faq {
@@ -263,10 +239,6 @@ footer {
 
 @media (max-width: 760px) {
   .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .facts {
     grid-template-columns: 1fr;
   }
 }
