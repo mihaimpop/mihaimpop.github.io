@@ -18,6 +18,7 @@ const requiredFiles = [
   "public/favicon.svg",
   "public/favicon-96.png",
   "public/apple-touch-icon.png",
+  "public/site.webmanifest",
   "public/media/home-poster.svg",
   "public/media/profile-signal.svg",
   "public/media/film-signal.svg",
@@ -112,6 +113,7 @@ if (existsSync("dist")) {
     "dist/favicon.svg",
     "dist/favicon-96.png",
     "dist/apple-touch-icon.png",
+    "dist/site.webmanifest",
     "dist/media/home-poster.svg",
   ]) {
     if (!existsSync(file)) errors.push(`${file} is missing from dist; run pnpm build`);

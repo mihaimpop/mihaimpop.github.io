@@ -191,6 +191,65 @@ a:hover {
   }
 }
 
+.hudSocials {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hudSocialBtn {
+  color: var(--fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--hair);
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+[data-theme="dark"] .hudSocialBtn {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.hudSocialBtn:hover {
+  transform: translateY(-2px);
+  border-color: var(--fg);
+  background: var(--wash);
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.hudSocialBtn:active {
+  transform: translateY(0);
+}
+
+.hudSocialBtn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+@media (max-width: 560px) {
+  .hudSocials {
+    gap: 4px;
+  }
+  .hudSocialBtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+  .hudSocialBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
 .pill {
   display: inline-flex;
   align-items: center;

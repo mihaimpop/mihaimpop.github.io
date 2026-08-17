@@ -1,0 +1,38 @@
+{
+  "name": "Mihai Pop",
+  "short_name": "Mihai Pop",
+  "description": "Full-stack software engineer, musician, and filmmaker based in Cluj-Napoca, Romania.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07070a",
+  "theme_color": "#0b0b10",
+  "icons": [
+    {
+      "src": "/favicon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Official Profile",
+      "url": "/mihai-pop.html",
+      "description": "Mihai Pop verified profile"
+    },
+    {
+      "name": "Film",
+      "url": "/mihai-pop-film.html",
+      "description": "Mihai Pop film work"
+    },
+    {
+      "name": "YouTube",
+      "url": "/mihai-pop-youtube.html",
+      "description": "Mihai Pop YouTube channel"
+    }
+  ]
+}
