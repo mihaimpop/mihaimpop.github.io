@@ -1,8 +1,14 @@
 export function initTheme({ root, themeBtn, storageKey = "mihai_theme" }) {
   const sourceKey = `${storageKey}_source`;
   const systemThemeQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
-  const savedTheme = localStorage.getItem(storageKey);
-  const savedSource = localStorage.getItem(sourceKey);
+  let savedTheme = null;
+  let savedSource = null;
+  try {
+    savedTheme = localStorage.getItem(storageKey);
+    savedSource = localStorage.getItem(sourceKey);
+  } catch {
+    // Theme controls remain usable when browser storage is unavailable.
+  }
   const hasSavedTheme = savedTheme === "light" || savedTheme === "dark";
   let manualTheme = savedSource === "manual" && hasSavedTheme;
 
@@ -34,17 +40,18 @@ export function initTheme({ root, themeBtn, storageKey = "mihai_theme" }) {
 
   themeBtn.addEventListener("click", () => {
     const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
-    manualTheme = true;
-    localStorage.setItem(storageKey, nextTheme);
-    localStorage.setItem(sourceKey, "manual");
-    applyTheme(nextTheme);
+    setTheme(nextTheme);
   });
 
   function setTheme(theme) {
     manualTheme = true;
-    localStorage.setItem(storageKey, theme);
-    localStorage.setItem(sourceKey, "manual");
     applyTheme(theme);
+    try {
+      localStorage.setItem(storageKey, theme);
+      localStorage.setItem(sourceKey, "manual");
+    } catch {
+      // Keep the selected theme for this page even if it cannot be persisted.
+    }
   }
 
   return setTheme;
@@ -52,9 +59,11 @@ export function initTheme({ root, themeBtn, storageKey = "mihai_theme" }) {
 
 export function initHudMenu({ hud, menuBtn, controlsMenu }) {
   function setOpen(isOpen) {
+    const restoreFocus = !isOpen && controlsMenu.contains(document.activeElement);
     menuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
     controlsMenu.hidden = !isOpen;
     hud.classList.toggle("hudMenuOpen", isOpen);
+    if (restoreFocus) menuBtn.focus();
   }
 
   function toggleOpen() {
@@ -84,15 +93,20 @@ export function initHudMenu({ hud, menuBtn, controlsMenu }) {
 
 export function initDrawer({ drawer, drawerClose, playBtn }) {
   function openDrawer() {
-    drawer.style.display = "block";
+    drawer.hidden = false;
+    playBtn.setAttribute("aria-expanded", "true");
+    drawerClose.focus();
   }
 
   function closeDrawer() {
-    drawer.style.display = "none";
+    const restoreFocus = drawer.contains(document.activeElement);
+    drawer.hidden = true;
+    playBtn.setAttribute("aria-expanded", "false");
+    if (restoreFocus) playBtn.focus();
   }
 
   playBtn.addEventListener("click", () => {
-    if (drawer.style.display === "block") {
+    if (!drawer.hidden) {
       closeDrawer();
       return;
     }
@@ -100,6 +114,9 @@ export function initDrawer({ drawer, drawerClose, playBtn }) {
   });
 
   drawerClose.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !drawer.hidden) closeDrawer();
+  });
 
   return { openDrawer, closeDrawer };
 }

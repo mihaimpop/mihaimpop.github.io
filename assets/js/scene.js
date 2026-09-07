@@ -984,10 +984,6 @@ export function initTourScene({
   }
 
   function M_triggerBrandRefresh() {
-    if (!M_reducedMotion && !M_tourEnabled) {
-      M_setTourEnabled(true);
-    }
-
     window.scrollTo({ top: 0, behavior: M_reducedMotion ? "auto" : "smooth" });
     if (location.hash === "#express") {
       history.replaceState(null, "", `${location.pathname}${location.search}`);
@@ -1003,7 +999,7 @@ export function initTourScene({
     M_wink();
     M_fidget();
 
-    if (M_tourIsVisible()) M_start();
+    if (M_tourEnabled && M_tourIsVisible()) M_start();
     else M_renderOnce();
   }
 
@@ -1795,7 +1791,7 @@ export function initTourScene({
     M_renderOnce();
   }
   function M_start() {
-    if (M_running) return;
+    if (M_running || !M_tourEnabled) return;
     M_running = true;
     M_lastT = performance.now();
     if (!M_introStarted) {

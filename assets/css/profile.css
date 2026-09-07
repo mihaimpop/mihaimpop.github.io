@@ -41,6 +41,14 @@ a:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 4px;
+}
+p a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 .wrap {
   max-width: var(--max);
@@ -221,20 +229,20 @@ ul {
   flex-wrap: wrap;
   padding: 2px 0 14px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(11, 11, 16, 0.28);
+  color: var(--muted);
 }
 
 .seoLinks a {
   color: inherit;
   text-decoration: none;
-  opacity: 0.9;
+  padding-block: 8px;
 }
 
 .seoLinks a:hover {
-  color: rgba(11, 11, 16, 0.46);
+  color: var(--fg);
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -261,5 +269,16 @@ footer {
 @media (max-width: 760px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .pill {
+    transition: none;
+  }
+  .pill:hover {
+    transform: none;
   }
 }
