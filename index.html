@@ -112,15 +112,15 @@
         ]
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-ofI6yeNd.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbWT0Cjy.css">
+    <script type="module" crossorigin src="/assets/index-DbZQvz2F.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BfmwykJ_.css">
   </head>
 
   <body>
     <a class="skipLink" href="#express">Skip to main content</a>
     <div class="hud" id="M_hud" aria-label="HUD">
       <div class="leftHud">
-        <button class="logoBtn" id="logoBtn" aria-label="Logo">
+        <button class="logoBtn" id="logoBtn" aria-label="Return to top">
           <svg
             width="26"
             height="26"
@@ -194,7 +194,7 @@
       </div>
 
       <div class="rightHud">
-        <button class="btn playBtn" id="M_playBtn" type="button">PLAY</button>
+        <button class="btn playBtn" id="M_playBtn" type="button" aria-controls="M_drawer" aria-expanded="false">PLAY</button>
         <button
           class="menuBtn"
           id="M_menuBtn"
@@ -207,12 +207,12 @@
           <span></span>
           <span></span>
         </button>
-        <div class="controlsMenu" id="M_controlsMenu" role="menu" aria-label="Controls" hidden>
+        <div class="controlsMenu" id="M_controlsMenu" hidden>
           <span class="controlsEyebrow">Control Deck</span>
-          <button class="btn menuCtl" id="M_themeBtn" type="button" role="menuitem">
+          <button class="btn menuCtl" id="M_themeBtn" type="button">
             Theme: Light
           </button>
-          <button class="btn menuCtl" id="M_tourToggle" type="button" role="menuitem">
+          <button class="btn menuCtl" id="M_tourToggle" type="button">
             Tour: ON
           </button>
         </div>
@@ -258,7 +258,7 @@
       </div>
     </section>
 
-    <main class="wrap" id="express">
+    <main class="wrap" id="express" tabindex="-1">
       <div class="expressHead">
         <span>EXPRESS</span>
         <b>Quick hits.</b>
@@ -266,8 +266,8 @@
 
       <p class="note" style="margin: 14px 0 0; font-family: var(--mono)">
         I am Mihai Pop, a full-stack software engineer and filmmaker based in Cluj-Napoca, Romania.
-        Unlike other public figures with this name, my work bridges interactive software
-        architecture (React, Three.js, Node) and story-first visual filmmaking. I ship what I make:
+        I build interactive software with React, Three.js, and Node, and tell stories through film.
+        I ship what I make:
         code, music, film. If it doesn't feel right, it's not done.
       </p>
 
@@ -348,9 +348,9 @@
       </footer>
     </main>
 
-    <div class="drawer" id="M_drawer" role="dialog" aria-label="Play drawer">
-      <span class="x" id="M_drawerX">x</span>
-      <h3>PLAY (touch / mouse)</h3>
+    <div class="drawer" id="M_drawer" role="dialog" aria-labelledby="playTitle" hidden>
+      <button class="x" id="M_drawerX" type="button" aria-label="Close play instructions">×</button>
+      <h2 id="playTitle">PLAY (touch / mouse)</h2>
       <div class="grid">
         <div class="tile">
           <b>Drag / Swipe</b><small>Grab it and move it with touch or mouse.</small>
